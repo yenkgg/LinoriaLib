@@ -2656,6 +2656,16 @@ do
             Parent = DropdownOuter;
         })
 
+        Library:Create("UICorner", {
+            CornerRadius = UDim.new(0, 6);
+            Parent = DropdownOuter;
+        })
+
+        Library:Create("UICorner", {
+            CornerRadius = UDim.new(0, 5);
+            Parent = DropdownInner;
+        })
+
         Library:AddToRegistry(DropdownInner, {
             BackgroundColor3 = "MainColor";
             BorderColor3 = "OutlineColor";
@@ -2773,6 +2783,16 @@ do
             Size = UDim2.new(1, 0, 1, 0);
             ZIndex = 21;
             Parent = ListOuter;
+        })
+
+        Library:Create("UICorner", {
+            CornerRadius = UDim.new(0, 7);
+            Parent = ListOuter;
+        })
+
+        Library:Create("UICorner", {
+            CornerRadius = UDim.new(0, 6);
+            Parent = ListInner;
         })
 
         Library:AddToRegistry(ListInner, {
@@ -4308,6 +4328,16 @@ do
             Parent = SliderOuter;
         })
 
+        Library:Create("UICorner", {
+            CornerRadius = UDim.new(0, 7);
+            Parent = SliderOuter;
+        })
+
+        Library:Create("UICorner", {
+            CornerRadius = UDim.new(0, 6);
+            Parent = SliderInner;
+        })
+
         Library:AddToRegistry(SliderInner, {
             BackgroundColor3 = "MainColor";
             BorderColor3 = "OutlineColor";
@@ -4319,6 +4349,11 @@ do
             Size = UDim2.new(0, 0, 1, 0);
             ZIndex = 7;
             Parent = SliderInner;
+        })
+
+        Library:Create("UICorner", {
+            CornerRadius = UDim.new(0, 6);
+            Parent = Fill;
         })
 
         Library:AddToRegistry(Fill, {
@@ -4687,6 +4722,16 @@ do
             Parent = DropdownOuter;
         })
 
+        Library:Create("UICorner", {
+            CornerRadius = UDim.new(0, 6);
+            Parent = DropdownOuter;
+        })
+
+        Library:Create("UICorner", {
+            CornerRadius = UDim.new(0, 5);
+            Parent = DropdownInner;
+        })
+
         Library:AddToRegistry(DropdownInner, {
             BackgroundColor3 = "MainColor";
             BorderColor3 = "OutlineColor";
@@ -4801,6 +4846,16 @@ do
             Size = UDim2.new(1, 0, 1, 0);
             ZIndex = 21;
             Parent = ListOuter;
+        })
+
+        Library:Create("UICorner", {
+            CornerRadius = UDim.new(0, 7);
+            Parent = ListOuter;
+        })
+
+        Library:Create("UICorner", {
+            CornerRadius = UDim.new(0, 6);
+            Parent = ListInner;
         })
 
         Library:AddToRegistry(ListInner, {
@@ -6363,6 +6418,24 @@ do
             Parent = NotifyOuter;
         })
 
+        Library:Create("UICorner", {
+            CornerRadius = UDim.new(0, 9);
+            Parent = NotifyOuter;
+        })
+
+        Library:Create("UIStroke", {
+            Color = Library.AccentColor;
+            Transparency = 0.72;
+            Thickness = 1;
+            ApplyStrokeMode = Enum.ApplyStrokeMode.Border;
+            Parent = NotifyOuter;
+        })
+
+        Library:Create("UICorner", {
+            CornerRadius = UDim.new(0, 8);
+            Parent = NotifyInner;
+        })
+
         Library:AddToRegistry(NotifyInner, {
             BackgroundColor3 = "MainColor";
             BorderColor3 = "OutlineColor";
@@ -6375,6 +6448,11 @@ do
             Size = UDim2.new(1, -2, 1, -2);
             ZIndex = 11002;
             Parent = NotifyInner;
+        })
+
+        Library:Create("UICorner", {
+            CornerRadius = UDim.new(0, 7);
+            Parent = InnerFrame;
         })
 
         local Gradient = Library:Create("UIGradient", {
@@ -6675,23 +6753,36 @@ function Library:CreateWindow(...)
     })
 
     local TabArea = Library:Create("ScrollingFrame", {
-        ScrollingDirection = Enum.ScrollingDirection.X;
-        CanvasSize = UDim2.new(0, 0, 2, 0);
-        HorizontalScrollBarInset = Enum.ScrollBarInset.Always;
-        AutomaticCanvasSize = Enum.AutomaticSize.XY;
+        ScrollingDirection = Enum.ScrollingDirection.Y;
+        CanvasSize = UDim2.new(0, 0, 0, 0);
+        AutomaticCanvasSize = Enum.AutomaticSize.Y;
         ScrollBarThickness = 0;
-        BackgroundTransparency = 1;
-        Position = UDim2.new(0, 8 - WindowInfo.TabPadding, 0, 4);
-        Size = UDim2.new(1, -10, 0, 26);
-        ZIndex = 1;
+        BackgroundColor3 = Library.MainColor;
+        BorderColor3 = Library.OutlineColor;
+        Position = UDim2.new(0, 6, 0, 6);
+        Size = UDim2.new(0, 104, 1, -12);
+        ZIndex = 2;
         Parent = MainSectionInner;
     })
 
+    Library:Create("UICorner", {
+        CornerRadius = UDim.new(0, 8);
+        Parent = TabArea;
+    })
+
+    Library:Create("UIPadding", {
+        PaddingTop = UDim.new(0, 6);
+        PaddingBottom = UDim.new(0, 6);
+        PaddingLeft = UDim.new(0, 6);
+        PaddingRight = UDim.new(0, 6);
+        Parent = TabArea;
+    })
+
     local TabListLayout = Library:Create("UIListLayout", {
-        Padding = UDim.new(0, WindowInfo.TabPadding);
-        FillDirection = Enum.FillDirection.Horizontal;
+        Padding = UDim.new(0, WindowInfo.TabPadding + 3);
+        FillDirection = Enum.FillDirection.Vertical;
         SortOrder = Enum.SortOrder.LayoutOrder;
-        VerticalAlignment = Enum.VerticalAlignment.Center;
+        HorizontalAlignment = Enum.HorizontalAlignment.Center;
         Parent = TabArea;
     })
 
@@ -6718,7 +6809,8 @@ function Library:CreateWindow(...)
         BackgroundColor3 = Library.MainColor;
         BorderColor3 = Library.OutlineColor;
         Position = UDim2.new(0, 8, 0, 30);
-        Size = UDim2.new(1, -16, 1, -38);
+        Size = UDim2.new(1, -120, 1, -12);
+        Position = UDim2.new(0, 116, 0, 6);
         ZIndex = 2;
         Parent = MainSectionInner;
     })
@@ -7287,8 +7379,8 @@ function Library:CreateWindow(...)
         local TabButton = Library:Create("Frame", {
             BackgroundColor3 = Library.BackgroundColor;
             BorderColor3 = Library.OutlineColor;
-            Size = UDim2.new(0, TabButtonWidth + 8 + 4, 0.85, 0);
-            ZIndex = 1;
+            Size = UDim2.new(1, -2, 0, 34);
+            ZIndex = 3;
             Parent = TabArea;
         })
 
@@ -7303,8 +7395,8 @@ function Library:CreateWindow(...)
         })
 
         local TabButtonLabel = Library:CreateLabel({
-            Position = UDim2.new(0, 0, 0, 0);
-            Size = UDim2.new(1, 0, 1, -1);
+            Position = UDim2.new(0, 12, 0, 0);
+            Size = UDim2.new(1, -18, 1, -1);
             Text = Tab.Name;
             ZIndex = 1;
             Parent = TabButton;
@@ -7614,7 +7706,7 @@ end
 
                 local TabButtonWidth = Library:GetTextBounds(Tab.Name, Library.Font, 16)
 
-                TabButton.Size = UDim2.new(0, TabButtonWidth + 8 + 4, 0.85, 0)
+                TabButton.Size = UDim2.new(1, -2, 0, 34)
                 TabButtonLabel.Text = Tab.Name
             end
         end
