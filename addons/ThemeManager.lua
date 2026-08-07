@@ -54,28 +54,19 @@ local ThemeManager = {} do
 
 	ThemeManager.Library = nil
 	ThemeManager.BuiltInThemes = {
-		-- Original 9 themes
+		-- OG Default theme (kept)
 		['Default']       = { 1, { FontColor = "ffffff", MainColor = "1c1c1c", AccentColor = "0055ff", BackgroundColor = "141414", OutlineColor = "323232" } },
-		['BBot']          = { 2, { FontColor = "ffffff", MainColor = "1e1e1e", AccentColor = "7e48a3", BackgroundColor = "232323", OutlineColor = "141414" } },
-		['Fatality']      = { 3, { FontColor = "ffffff", MainColor = "1e1842", AccentColor = "c50754", BackgroundColor = "191335", OutlineColor = "3c355d" } },
-		['Jester']        = { 4, { FontColor = "ffffff", MainColor = "242424", AccentColor = "db4467", BackgroundColor = "1c1c1c", OutlineColor = "373737" } },
-		['Mint']          = { 5, { FontColor = "ffffff", MainColor = "242424", AccentColor = "3db488", BackgroundColor = "1c1c1c", OutlineColor = "373737" } },
-		['Tokyo Night']   = { 6, { FontColor = "ffffff", MainColor = "191925", AccentColor = "6759b3", BackgroundColor = "16161f", OutlineColor = "323232" } },
-		['Ubuntu']        = { 7, { FontColor = "ffffff", MainColor = "3e3e3e", AccentColor = "e2581e", BackgroundColor = "323232", OutlineColor = "191919" } },
-		['Quartz']        = { 8, { FontColor = "ffffff", MainColor = "232330", AccentColor = "426e87", BackgroundColor = "1d1b26", OutlineColor = "27232f" } },
-		-- 🌟 Lua X – sleek & vibrant
-		['Lua X']         = { 9, { FontColor = "dcdcff", MainColor = "0a0a1a", AccentColor = "00ccff", BackgroundColor = "0f0f20", OutlineColor = "1e1e3c" } },
-		-- 🆕 10 New Themes
-		['Neon Genesis']  = { 10, { FontColor = "ffffff", MainColor = "0a0a1a", AccentColor = "ff00ff", BackgroundColor = "141428", OutlineColor = "2a2a4a" } },
-		['Cyberpunk']     = { 11, { FontColor = "ffffff", MainColor = "0d0d1a", AccentColor = "00ffff", BackgroundColor = "1a1a2e", OutlineColor = "2d2d4a" } },
-		['Midnight Rose'] = { 12, { FontColor = "ffffff", MainColor = "1a0a0a", AccentColor = "e6005c", BackgroundColor = "241212", OutlineColor = "3d1c1c" } },
-		['Ocean Breeze']  = { 13, { FontColor = "e0f0ff", MainColor = "0a2a3a", AccentColor = "00bcd4", BackgroundColor = "0e3a4a", OutlineColor = "1a4a5a" } },
-		['Lavender Dream']= { 14, { FontColor = "f0e6ff", MainColor = "1a1428", AccentColor = "a885d4", BackgroundColor = "241e3a", OutlineColor = "3a2a5a" } },
-		['Forest Night']  = { 15, { FontColor = "d4e8d4", MainColor = "0a1a0a", AccentColor = "3a8c3a", BackgroundColor = "142414", OutlineColor = "2a3a2a" } },
-		['Sunset Glow']   = { 16, { FontColor = "fff0d4", MainColor = "2a140a", AccentColor = "ff6b35", BackgroundColor = "3a1e0e", OutlineColor = "5a2e1a" } },
-		['Monochrome']    = { 17, { FontColor = "f0f0f0", MainColor = "1a1a1a", AccentColor = "888888", BackgroundColor = "2a2a2a", OutlineColor = "3a3a3a" } },
-		['Cotton Candy']  = { 18, { FontColor = "fff5ff", MainColor = "1a1030", AccentColor = "ff66b2", BackgroundColor = "2a1a40", OutlineColor = "4a2a5a" } },
-		['Inferno']       = { 19, { FontColor = "fff0e0", MainColor = "1a0800", AccentColor = "ff2200", BackgroundColor = "2a1000", OutlineColor = "4a1a00" } },
+		-- 🆕 10 New Themes (all others removed)
+		['Neon Genesis']  = { 2, { FontColor = "ffffff", MainColor = "0a0a1a", AccentColor = "ff00ff", BackgroundColor = "141428", OutlineColor = "2a2a4a" } },
+		['Cyberpunk']     = { 3, { FontColor = "ffffff", MainColor = "0d0d1a", AccentColor = "00ffff", BackgroundColor = "1a1a2e", OutlineColor = "2d2d4a" } },
+		['Midnight Rose'] = { 4, { FontColor = "ffffff", MainColor = "1a0a0a", AccentColor = "e6005c", BackgroundColor = "241212", OutlineColor = "3d1c1c" } },
+		['Ocean Breeze']  = { 5, { FontColor = "e0f0ff", MainColor = "0a2a3a", AccentColor = "00bcd4", BackgroundColor = "0e3a4a", OutlineColor = "1a4a5a" } },
+		['Lavender Dream']= { 6, { FontColor = "f0e6ff", MainColor = "1a1428", AccentColor = "a885d4", BackgroundColor = "241e3a", OutlineColor = "3a2a5a" } },
+		['Forest Night']  = { 7, { FontColor = "d4e8d4", MainColor = "0a1a0a", AccentColor = "3a8c3a", BackgroundColor = "142414", OutlineColor = "2a3a2a" } },
+		['Sunset Glow']   = { 8, { FontColor = "fff0d4", MainColor = "2a140a", AccentColor = "ff6b35", BackgroundColor = "3a1e0e", OutlineColor = "5a2e1a" } },
+		['Monochrome']    = { 9, { FontColor = "f0f0f0", MainColor = "1a1a1a", AccentColor = "888888", BackgroundColor = "2a2a2a", OutlineColor = "3a3a3a" } },
+		['Cotton Candy']  = { 10, { FontColor = "fff5ff", MainColor = "1a1030", AccentColor = "ff66b2", BackgroundColor = "2a1a40", OutlineColor = "4a2a5a" } },
+		['Inferno']       = { 11, { FontColor = "fff0e0", MainColor = "1a0800", AccentColor = "ff2200", BackgroundColor = "2a1000", OutlineColor = "4a1a00" } },
 	}
 
 	function ApplyBackgroundVideo(videoLink)
