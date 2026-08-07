@@ -18,8 +18,6 @@ local assert = function(condition, errorMessage)
 end
 
 if typeof(clonefunction) == "function" then
-    -- Fix is_____ functions for shitsploits, those functions should never error, only return a boolean.
-
     local
         isfolder_copy,
         isfile_copy,
@@ -50,13 +48,10 @@ end
 local ThemeManager = {} do
 	local ThemeFields = { "FontColor", "MainColor", "AccentColor", "BackgroundColor", "OutlineColor", "VideoLink" }
 	ThemeManager.Folder = "LinoriaLibSettings"
-	-- if not isfolder(ThemeManager.Folder) then makefolder(ThemeManager.Folder) end
 
 	ThemeManager.Library = nil
 	ThemeManager.BuiltInThemes = {
-		-- OG Default theme (kept)
 		['Default']           = { 1, { FontColor = "ffffff", MainColor = "1c1c1c", AccentColor = "0055ff", BackgroundColor = "141414", OutlineColor = "323232" } },
-		-- First 10 new themes (previously added)
 		['Neon Genesis']      = { 2, { FontColor = "ffffff", MainColor = "0a0a1a", AccentColor = "ff00ff", BackgroundColor = "141428", OutlineColor = "2a2a4a" } },
 		['Cyberpunk']         = { 3, { FontColor = "ffffff", MainColor = "0d0d1a", AccentColor = "00ffff", BackgroundColor = "1a1a2e", OutlineColor = "2d2d4a" } },
 		['Midnight Rose']     = { 4, { FontColor = "ffffff", MainColor = "1a0a0a", AccentColor = "e6005c", BackgroundColor = "241212", OutlineColor = "3d1c1c" } },
@@ -67,7 +62,6 @@ local ThemeManager = {} do
 		['Monochrome']        = { 9, { FontColor = "f0f0f0", MainColor = "1a1a1a", AccentColor = "888888", BackgroundColor = "2a2a2a", OutlineColor = "3a3a3a" } },
 		['Cotton Candy']      = { 10, { FontColor = "fff5ff", MainColor = "1a1030", AccentColor = "ff66b2", BackgroundColor = "2a1a40", OutlineColor = "4a2a5a" } },
 		['Inferno']           = { 11, { FontColor = "fff0e0", MainColor = "1a0800", AccentColor = "ff2200", BackgroundColor = "2a1000", OutlineColor = "4a1a00" } },
-		-- 🚀 40 NEW themes (indices 12–51)
 		['Aurora']            = { 12, { FontColor = "e0f7ff", MainColor = "0a1a2a", AccentColor = "00e5ff", BackgroundColor = "122a3a", OutlineColor = "2a4a5a" } },
 		['Blood Moon']        = { 13, { FontColor = "ffd4d4", MainColor = "1a0000", AccentColor = "cc0000", BackgroundColor = "2a0a0a", OutlineColor = "4a1a1a" } },
 		['Candy Crush']       = { 14, { FontColor = "ffffff", MainColor = "1a0a2a", AccentColor = "ff44aa", BackgroundColor = "2a1a3a", OutlineColor = "4a2a5a" } },
@@ -108,8 +102,7 @@ local ThemeManager = {} do
 		['Flamingo']          = { 49, { FontColor = "ffe0e0", MainColor = "1a0a0a", AccentColor = "ff6699", BackgroundColor = "2a1414", OutlineColor = "4a2a2a" } },
 		['Graphite']          = { 50, { FontColor = "d0d0d0", MainColor = "111111", AccentColor = "777777", BackgroundColor = "1a1a1a", OutlineColor = "2a2a2a" } },
 		['Obsidian']          = { 51, { FontColor = "c8c8d0", MainColor = "08080c", AccentColor = "3a4a5a", BackgroundColor = "101018", OutlineColor = "202028" } },
-		-- 🎬 5 NEW themes with VideoLink (webm background) – indices 52–56
-		['Neon Nights']       = { 52, { FontColor = "f0e0ff", MainColor = "0a0a1a", AccentColor = "ff44ff", BackgroundColor = "141428", OutlineColor = "2a2a4a", VideoLink = "https://example.com/neon.webm" } },
+		['Neon Nights']       = { 52, { FontColor = "f0e0ff", MainColor = "0a0a1a", AccentColor = "ff44ff", BackgroundColor = "141428", OutlineColor = "2a2a4a", VideoLink = "https://cdn.pixabay.com/video/2018/09/30/18492-292594998_large.mp4" } },
 		['Cyber City']        = { 53, { FontColor = "e0f0ff", MainColor = "0a0a1e", AccentColor = "00ccff", BackgroundColor = "12122e", OutlineColor = "2a2a5a", VideoLink = "https://example.com/cyber.webm" } },
 		['Aurora Borealis']   = { 54, { FontColor = "d4ffd4", MainColor = "001020", AccentColor = "44ff88", BackgroundColor = "0a1a1a", OutlineColor = "1a3a3a", VideoLink = "https://example.com/aurora.webm" } },
 		['Lava Flow']         = { 55, { FontColor = "ffd8b0", MainColor = "1a0800", AccentColor = "ff4400", BackgroundColor = "2a1000", OutlineColor = "4a2000", VideoLink = "https://example.com/lava.webm" } },
@@ -123,23 +116,23 @@ local ThemeManager = {} do
 			not (ThemeManager.Library and ThemeManager.Library.InnerVideoBackground)
 		then return; end;
 
-		--// Variables \\--
 		local videoInstance = ThemeManager.Library.InnerVideoBackground;
 		local extension = videoLink:match(".*/(.-)?") or videoLink:match(".*/(.-)$"); extension = tostring(extension);
 		local filename = string.sub(extension, 0, -6);
-		local _, domain = videoLink:match("^(https?://)([^/]+)"); domain = tostring(domain); -- _ is protocol
+		local _, domain = videoLink:match("^(https?://)([^/]+)"); domain = tostring(domain);
 
-		--// Check URL \\--
 		if videoLink == "" then
 			videoInstance:Pause();
 			videoInstance.Video = "";
 			videoInstance.Visible = false;
 			return
 		end
-		if #extension > 5 and string.sub(extension, -5) ~= ".webm" then return; end;
+		
+		-- 🔧 FIX: Allow both .webm AND .mp4 files
+		local ext = string.lower(string.sub(extension, -5))
+		if #extension > 5 and ext ~= ".webm" and ext ~= ".mp4" then return; end;
 
-		--// Fetch Video Data \\--
-		local videoFile = ThemeManager.Folder .. "/themes/" .. string.gsub(domain .. filename, 0, 249) .. ".webm";
+		local videoFile = ThemeManager.Folder .. "/themes/" .. string.gsub(domain .. filename, 0, 249) .. "." .. (ext == ".mp4" and "mp4" or "webm");
 		if not isfile(videoFile) then
 			local success, requestRes = pcall(httprequest, { Url = videoLink, Method = 'GET' })
 			if not (success and typeof(requestRes) == "table" and typeof(requestRes.Body) == "string") then return; end;
@@ -147,7 +140,6 @@ local ThemeManager = {} do
 			writefile(videoFile, requestRes.Body)
 		end
 
-		--// Play Video \\--
 		videoInstance.Video = getassetfunc(videoFile);
 		videoInstance.Visible = true;
 		videoInstance:Play();
@@ -157,7 +149,6 @@ local ThemeManager = {} do
 		self.Library = library
 	end
 
-	--// Folders \\--
 	function ThemeManager:GetPaths()
 	    local paths = {}
 
@@ -193,14 +184,12 @@ local ThemeManager = {} do
 		self:BuildFolderTree()
 	end
 	
-	--// Apply, Update theme \\--
 	function ThemeManager:ApplyTheme(theme)
 		local customThemeData = self:GetCustomTheme(theme)
 		local data = customThemeData or self.BuiltInThemes[theme]
 
 		if not data then return end
 
-		-- custom themes are just regular dictionaries instead of an array with { index, dictionary }
 		if self.Library.InnerVideoBackground ~= nil then
 			self.Library.InnerVideoBackground.Visible = false
 		end
@@ -228,7 +217,6 @@ local ThemeManager = {} do
 	end
 
 	function ThemeManager:ThemeUpdate()
-		-- This allows us to force apply themes without loading the themes tab :)
 		if self.Library.InnerVideoBackground ~= nil then
 			self.Library.InnerVideoBackground.Visible = false
 		end
@@ -247,7 +235,6 @@ local ThemeManager = {} do
 		self.Library:UpdateColorsUsingRegistry()
 	end
 
-	--// Get, Load, Save, Delete, Refresh \\--
 	function ThemeManager:GetCustomTheme(file)
 		local path = self.Folder .. '/themes/' .. file .. '.json'
 		if not isfile(path) then
@@ -330,8 +317,6 @@ local ThemeManager = {} do
 		for i = 1, #list do
 			local file = list[i]
 			if file:sub(-5) == '.json' then
-				-- i hate this but it has to be done ...
-
 				local pos = file:find('.json', 1, true)
 				local start = pos
 
@@ -350,14 +335,13 @@ local ThemeManager = {} do
 		return out
 	end
 
-	--// GUI \\--
 	function ThemeManager:CreateThemeManager(groupbox)
 		groupbox:AddLabel('Background color'):AddColorPicker('BackgroundColor', { Default = self.Library.BackgroundColor });
 		groupbox:AddLabel('Main color')	:AddColorPicker('MainColor', { Default = self.Library.MainColor });
 		groupbox:AddLabel('Accent color'):AddColorPicker('AccentColor', { Default = self.Library.AccentColor });
 		groupbox:AddLabel('Outline color'):AddColorPicker('OutlineColor', { Default = self.Library.OutlineColor });
 		groupbox:AddLabel('Font color')	:AddColorPicker('FontColor', { Default = self.Library.FontColor });
-		groupbox:AddInput('VideoLink', { Text = '.webm Video Background (Link)', Default = self.Library.VideoLink });
+		groupbox:AddInput('VideoLink', { Text = '.webm/.mp4 Video Background (Link)', Default = self.Library.VideoLink });
 		
 		local ThemesArray = {}
 		for Name, Theme in next, self.BuiltInThemes do
