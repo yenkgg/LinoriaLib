@@ -231,15 +231,15 @@ local Library = {
     HudRegistry = {};
 
     -- colors and font --
-    FontColor = Color3.fromRGB(255, 255, 255);
-    MainColor = Color3.fromRGB(28, 28, 28);
-    BackgroundColor = Color3.fromRGB(20, 20, 20);
+    FontColor = Color3.fromRGB(238, 242, 250);
+    MainColor = Color3.fromRGB(25, 27, 36);
+    BackgroundColor = Color3.fromRGB(16, 18, 25);
 
-    AccentColor = Color3.fromRGB(0, 85, 255);
-    DisabledAccentColor = Color3.fromRGB(142, 142, 142);
+    AccentColor = Color3.fromRGB(115, 145, 255);
+    DisabledAccentColor = Color3.fromRGB(105, 111, 128);
 
-    OutlineColor = Color3.fromRGB(50, 50, 50);
-    DisabledOutlineColor = Color3.fromRGB(70, 70, 70);
+    OutlineColor = Color3.fromRGB(57, 64, 82);
+    DisabledOutlineColor = Color3.fromRGB(72, 78, 94);
 
     DisabledTextColor = Color3.fromRGB(142, 142, 142);
 
@@ -1355,8 +1355,8 @@ do
             })
 
             local KeybindsToggleOuter = Library:Create("Frame", {
-                BackgroundColor3 = Color3.new(0, 0, 0);
-                BorderColor3 = Color3.new(0, 0, 0);
+                BackgroundColor3 = Library.BackgroundColor;
+                BorderColor3 = Library.OutlineColor;
                 Size = UDim2.new(0, 13, 0, 13);
                 Position = UDim2.new(0, 0, 0, 6);
                 Visible = true;
@@ -3313,8 +3313,8 @@ do
 
             local LeftOuter = Library:Create("Frame", {
                 AnchorPoint = Vector2.new(0, 0.5);
-                BackgroundColor3 = Color3.new(0, 0, 0);
-                BorderColor3 = Color3.new(0, 0, 0);
+                BackgroundColor3 = Library.BackgroundColor;
+                BorderColor3 = Library.OutlineColor;
                 Position = UDim2.fromScale(0, 0.5);
                 Size = UDim2.new(0.5, -SizeX, 0, 5);
                 ZIndex = 5;
@@ -3331,8 +3331,8 @@ do
 
             local RightOuter = Library:Create("Frame", {
                 AnchorPoint = Vector2.new(1, 0.5);
-                BackgroundColor3 = Color3.new(0, 0, 0);
-                BorderColor3 = Color3.new(0, 0, 0);
+                BackgroundColor3 = Library.BackgroundColor;
+                BorderColor3 = Library.OutlineColor;
                 Position = UDim2.fromScale(1, 0.5);
                 Size = UDim2.new(0.5, -SizeX, 0, 5);
                 ZIndex = 5;
@@ -3353,8 +3353,8 @@ do
             Library:AddToRegistry(RightInner, { BackgroundColor3 = "MainColor"; BorderColor3 = "OutlineColor"; })
         else
             DividerOuter = Library:Create("Frame", {
-                BackgroundColor3 = Color3.new(0, 0, 0);
-                BorderColor3 = Color3.new(0, 0, 0);
+                BackgroundColor3 = Library.BackgroundColor;
+                BorderColor3 = Library.OutlineColor;
                 Size = UDim2.new(1, -4, 0, 5);
                 ZIndex = 5;
                 Parent = Container;
@@ -3491,9 +3491,9 @@ do
 
         local function CreateBaseButton(Button)
             local Outer = Library:Create("Frame", {
-                BackgroundColor3 = Color3.new(0, 0, 0);
-                BorderColor3 = Color3.new(0, 0, 0);
-                Size = UDim2.new(1, -4, 0, 23);
+                BackgroundColor3 = Library.BackgroundColor;
+                BorderColor3 = Library.OutlineColor;
+                Size = UDim2.new(1, -6, 0, 27);
                 Visible = IsVisible;
                 ZIndex = 5;
             })
@@ -3508,18 +3508,18 @@ do
             })
 
             Library:Create("UICorner", {
-                CornerRadius = UDim.new(0, 5);
+                CornerRadius = UDim.new(0, 9);
                 Parent = Outer;
             })
 
             Library:Create("UICorner", {
-                CornerRadius = UDim.new(0, 4);
+                CornerRadius = UDim.new(0, 8);
                 Parent = Inner;
             })
 
             Library:Create("UIStroke", {
                 Color = Library.OutlineColor;
-                Transparency = 0.35;
+                Transparency = 0.55;
                 Thickness = 1;
                 ApplyStrokeMode = Enum.ApplyStrokeMode.Border;
                 Parent = Inner;
@@ -3527,7 +3527,7 @@ do
 
             local Label = Library:CreateLabel({
                 Size = UDim2.new(1, 0, 1, 0);
-                TextSize = 14;
+                TextSize = 13;
                 Text = Button.Text;
                 ZIndex = 6;
                 Parent = Inner;
@@ -3536,9 +3536,9 @@ do
 
             Library:Create("UIGradient", {
                 Color = ColorSequence.new({
-                    ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
-                    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(235, 235, 235)),
-                    ColorSequenceKeypoint.new(1, Color3.fromRGB(205, 205, 205))
+                    ColorSequenceKeypoint.new(0, Color3.fromRGB(43, 47, 62)),
+                    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(34, 38, 52)),
+                    ColorSequenceKeypoint.new(1, Color3.fromRGB(27, 30, 42))
                 });
                 Rotation = 90;
                 Parent = Inner;
@@ -6616,6 +6616,14 @@ function Library:CreateWindow(...)
 
     Library:Create("UICorner", {
         CornerRadius = UDim.new(0, 7);
+        Parent = Inner;
+    })
+
+    Library:Create("UIStroke", {
+        Color = Library.AccentColor;
+        Transparency = 0.55;
+        Thickness = 1;
+        ApplyStrokeMode = Enum.ApplyStrokeMode.Border;
         Parent = Inner;
     })
 
