@@ -67,7 +67,7 @@ local ThemeManager = {} do
 		['Monochrome']        = { 9, { FontColor = "f0f0f0", MainColor = "1a1a1a", AccentColor = "888888", BackgroundColor = "2a2a2a", OutlineColor = "3a3a3a" } },
 		['Cotton Candy']      = { 10, { FontColor = "fff5ff", MainColor = "1a1030", AccentColor = "ff66b2", BackgroundColor = "2a1a40", OutlineColor = "4a2a5a" } },
 		['Inferno']           = { 11, { FontColor = "fff0e0", MainColor = "1a0800", AccentColor = "ff2200", BackgroundColor = "2a1000", OutlineColor = "4a1a00" } },
-		-- 🚀 40+ NEW themes (indices 12–51)
+		-- 🚀 40 NEW themes (indices 12–51)
 		['Aurora']            = { 12, { FontColor = "e0f7ff", MainColor = "0a1a2a", AccentColor = "00e5ff", BackgroundColor = "122a3a", OutlineColor = "2a4a5a" } },
 		['Blood Moon']        = { 13, { FontColor = "ffd4d4", MainColor = "1a0000", AccentColor = "cc0000", BackgroundColor = "2a0a0a", OutlineColor = "4a1a1a" } },
 		['Candy Crush']       = { 14, { FontColor = "ffffff", MainColor = "1a0a2a", AccentColor = "ff44aa", BackgroundColor = "2a1a3a", OutlineColor = "4a2a5a" } },
@@ -108,6 +108,12 @@ local ThemeManager = {} do
 		['Flamingo']          = { 49, { FontColor = "ffe0e0", MainColor = "1a0a0a", AccentColor = "ff6699", BackgroundColor = "2a1414", OutlineColor = "4a2a2a" } },
 		['Graphite']          = { 50, { FontColor = "d0d0d0", MainColor = "111111", AccentColor = "777777", BackgroundColor = "1a1a1a", OutlineColor = "2a2a2a" } },
 		['Obsidian']          = { 51, { FontColor = "c8c8d0", MainColor = "08080c", AccentColor = "3a4a5a", BackgroundColor = "101018", OutlineColor = "202028" } },
+		-- 🎬 5 NEW themes with VideoLink (webm background) – indices 52–56
+		['Neon Nights']       = { 52, { FontColor = "f0e0ff", MainColor = "0a0a1a", AccentColor = "ff44ff", BackgroundColor = "141428", OutlineColor = "2a2a4a", VideoLink = "https://example.com/neon.webm" } },
+		['Cyber City']        = { 53, { FontColor = "e0f0ff", MainColor = "0a0a1e", AccentColor = "00ccff", BackgroundColor = "12122e", OutlineColor = "2a2a5a", VideoLink = "https://example.com/cyber.webm" } },
+		['Aurora Borealis']   = { 54, { FontColor = "d4ffd4", MainColor = "001020", AccentColor = "44ff88", BackgroundColor = "0a1a1a", OutlineColor = "1a3a3a", VideoLink = "https://example.com/aurora.webm" } },
+		['Lava Flow']         = { 55, { FontColor = "ffd8b0", MainColor = "1a0800", AccentColor = "ff4400", BackgroundColor = "2a1000", OutlineColor = "4a2000", VideoLink = "https://example.com/lava.webm" } },
+		['Starry Sky']        = { 56, { FontColor = "e8e8ff", MainColor = "080818", AccentColor = "6688ff", BackgroundColor = "101028", OutlineColor = "202040", VideoLink = "https://example.com/stars.webm" } },
 	}
 
 	function ApplyBackgroundVideo(videoLink)
