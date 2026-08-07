@@ -1,6 +1,8 @@
 #  LinoriaLib – Yenk's Fork
 
 A **feature‑rich, highly customizable UI library** for Roblox exploits, forked from the original **LinoriaLib** with a ton of new themes, video background support, and quality‑of‑life improvements.
+<img width="564" height="605" alt="image" src="https://github.com/user-attachments/assets/11af1529-f35a-4be0-b782-4bdb32f27234" />
+
 
 ---
 
