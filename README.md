@@ -1,146 +1,143 @@
-# LinoriaLib (yenk's edition)
+#  LinoriaLib – Yenk's Fork
 
-A customized fork of **LinoriaLib**, focused on keeping the familiar LinoriaLib API while providing additional UI improvements, customization, and mobile support.
+A **feature‑rich, highly customizable UI library** for Roblox exploits, forked from the original **LinoriaLib** with a ton of new themes, video background support, and quality‑of‑life improvements.
 
-> **Note:** This project is a fork/customized version of LinoriaLib. Some behavior, styling, and features may differ from the original project.
+---
 
-## Features
+##  Features
 
-* LinoriaLib-style API
-* Custom UI styling
-* Tabs and groupboxes
-* Toggles
-* Sliders
-* Dropdowns
-* Buttons
-* Text inputs
-* Keybinds
-* Color pickers
-* Notifications
-* Mobile support
-* Mobile-specific UI controls
-* UI locking / unlocking
-* Resizable interface
-* Custom cursor support
+- **Clean, modern UI** with a fully customizable color scheme.
+- **50+ built‑in themes** – from dark and minimal to vibrant and neon.
+- **Video background support** – use `.webm` or `.mp4` videos as your UI background (per theme).
+- **ThemeManager** addon – save/load custom themes, set defaults, and switch on the fly.
+- **SaveManager** addon – persist your UI settings and configurations.
+- **Fully documented and modular** – easy to extend and integrate.
 
-## Installation
+---
 
-Load the library using your preferred method:
+##  Installation
+
+Load the library and its addons into your script:
 
 ```lua
-local Library = loadstring(game:HttpGet("YOUR_RAW_GITHUB_URL"))()
+local repo = "https://raw.githubusercontent.com/yenkgg/LinoriaLib/refs/heads/main/"
+
+local Library = loadstring(game:HttpGet(repo .. "Library.lua"))()
+local ThemeManager = loadstring(game:HttpGet(repo .. "addons/ThemeManager.lua"))()
+local SaveManager = loadstring(game:HttpGet(repo .. "addons/SaveManager.lua"))()
 ```
 
-Replace `YOUR_RAW_GITHUB_URL` with the raw URL to your fork's `Library.lua`.
+---
 
-## Basic Usage
+##  Quick Start
 
 ```lua
 local Window = Library:CreateWindow({
-    Title = "My Script",
+    Title = "My Awesome Script",
     Center = true,
     AutoShow = true,
 })
 
-local MainTab = Window:AddTab("Main")
-local SettingsTab = Window:AddTab("Settings")
+local Tab = Window:AddTab("Main", "home")
+local GroupBox = Tab:AddLeftGroupbox("Settings")
 
-local Main = MainTab:AddLeftGroupbox("Main")
-local Settings = SettingsTab:AddLeftGroupbox("Settings")
-
-Main:AddToggle("Enabled", {
-    Text = "Enabled",
+GroupBox:AddToggle("MyToggle", {
+    Text = "Enable Feature",
     Default = false,
-
-    Callback = function(Value)
-        print("Enabled:", Value)
-    end,
+    Callback = function(Value) print("Toggled:", Value) end
 })
 
-Settings:AddButton({
-    Text = "Test Button",
+-- Apply ThemeManager and SaveManager
+ThemeManager:SetLibrary(Library)
+ThemeManager:SetFolder("MyScriptSettings")
+ThemeManager:ApplyToTab(Window:AddTab("UI Settings", "settings"))
 
-    Func = function()
-        Library:Notify("Hello!", 2)
-    end,
-})
+SaveManager:SetLibrary(Library)
+SaveManager:SetFolder("MyScriptSettings")
+SaveManager:BuildConfigSection(Window:AddTab("UI Settings", "settings"))
 ```
 
-## Documentation
+---
 
-The basic hierarchy is:
+##  Built‑in Themes
 
-```text
-Library
-└── Window
-    ├── Tabs
-    │   ├── Left Groupbox
-    │   │   └── Controls
-    │   └── Right Groupbox
-    │       └── Controls
-```
+The ThemeManager comes with **56** gorgeous themes out‑of‑the‑box (and you can add your own!). Here's a selection:
 
-Most interfaces follow this pattern:
+| Theme Name        | Accent Color | Vibe |
+|-------------------|--------------|------|
+| **Default**       | `#0055ff`    | Classic blue |
+| **Neon Genesis**  | `#ff00ff`    | Neon pink & purple |
+| **Cyberpunk**     | `#00ffff`    | Bright cyan & dark blue |
+| **Lavender Dream**| `#a885d4`    | Soft purple |
+| **Sunset Glow**   | `#ff6b35`    | Warm orange & pink |
+| **Monochrome**    | `#888888`    | Sleek grayscale |
+| **Inferno**       | `#ff2200`    | Fiery red |
+| **Neon Nights**   | `#ff44ff`    | Animated neon (with MP4 background) (has bugs) |
+| ... and 48 more!  |              | |
+
+All themes are listed in the ThemeManager dropdown. You can also create your own custom themes via the UI.
+
+---
+
+##  Video Background
+
+You can set a video as the UI background for any theme. Just add a `VideoLink` field to your theme configuration:
 
 ```lua
-local Window = Library:CreateWindow(...)
-local Tab = Window:AddTab("Main")
-local Groupbox = Tab:AddLeftGroupbox("Example")
-
-Groupbox:AddToggle(...)
-Groupbox:AddButton(...)
-Groupbox:AddSlider(...)
-Groupbox:AddDropdown(...)
+["My Theme"] = {
+    FontColor = "ffffff",
+    MainColor = "0a0a1a",
+    AccentColor = "00ccff",
+    BackgroundColor = "0f0f20",
+    OutlineColor = "1e1e3c",
+    VideoLink = "https://example.com/background.webm"  -- or .mp4
+}
 ```
 
-## Mobile Support
+The library will automatically download and play the video when the theme is selected. Both **.webm** and **.mp4** formats are supported.
 
-This fork includes mobile-specific functionality.
+---
 
-You can check whether the library is running on a mobile device with:
+##  ThemeManager Usage
 
-```lua
-if Library.IsMobile then
-    print("Mobile device detected")
-end
-```
+- **Select a theme** from the dropdown – it applies instantly.
+- **Create custom themes** – tweak colors and save them as `.json` files.
+- **Set a default theme** – your users will load it automatically on startup.
 
-Mobile-specific controls should only be created when `Library.IsMobile` is true.
+The ThemeManager addon also provides a full UI for managing all of this – just call `ThemeManager:ApplyToTab()` as shown above.
 
-The mobile interface includes controls for:
+---
 
-* Showing/hiding the UI
-* Locking/unlocking UI movement
-* Touch-based interaction
+##  Addons
 
-Desktop users keep the normal desktop interface and behavior.
+### ThemeManager
 
-## What's Different From LinoriaLib?
+Handles all theme‑related functionality, including custom theme creation/deletion, video backgrounds, and default theme loading.
 
-This fork is intended to preserve the familiar LinoriaLib structure while adding/customizing functionality.
+### SaveManager
 
-Changes in this fork may include:
+Saves and loads your UI settings (toggles, sliders, dropdowns, etc.) to/from `.json` files. Perfect for persistent user configurations.
 
-* UI appearance changes
-* Mobile improvements
-* Mobile UI controls
-* Dragging/locking changes
-* Additional customization
-* Bug fixes and quality-of-life improvements
+---
 
-The API may remain compatible with existing LinoriaLib code where possible, but fork-specific behavior should be documented here.
+##  License
 
-## Contributing
+This project is open‑source and available under the **MIT License**. Feel free to use, modify, and distribute it as you wish.
 
-If you find a bug or have an improvement for the library, open an issue or submit a pull request.
+---
 
-When submitting an issue, include:
+##  Credits
 
-1. What happened
-2. What you expected to happen
-3. A reproducible example
-4. Any relevant errors
+- **Original LinoriaLib** – for the amazing base UI library.
+- **Yenkgg** – for the fork, theme expansions, video background support, and the good AI prompts.
+- **ChatGPT and Deepseek** – for building everything.
 
-## License
+---
 
-This project follows the license and attribution requirements of the original LinoriaLib project, along with any additional terms applicable to modifications in this fork.
+##  Support
+
+If you encounter issues or have suggestions, please open a ticket on my discord server: https://discord.gg/V4GzTxZvYn
+
+---
+
+**Happy scripting!** 
