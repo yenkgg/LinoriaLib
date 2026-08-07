@@ -7394,6 +7394,7 @@ function Library:CreateWindow(...)
             Parent = TabButton;
         })
 
+        -- FIX: Tab labels now always visible (white) and removed from registry tracking
         local TabButtonLabel = Library:CreateLabel({
             Position = UDim2.new(0, 12, 0, 0);
             Size = UDim2.new(1, -18, 1, -1);
@@ -7401,6 +7402,13 @@ function Library:CreateWindow(...)
             ZIndex = 1;
             Parent = TabButton;
         })
+        -- Force visible color
+        TabButtonLabel.TextColor3 = Color3.new(1, 1, 1)  -- pure white
+        -- Remove registry entry for TextColor3 so it won't be overridden
+        local regData = Library.RegistryMap[TabButtonLabel]
+        if regData and regData.Properties then
+            regData.Properties.TextColor3 = nil
+        end
 
         local Blocker = Library:Create("Frame", {
             BackgroundColor3 = Library.MainColor;
