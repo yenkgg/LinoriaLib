@@ -1,111 +1,163 @@
-# LinoriaLib – Yenk's Fork
+# LinoriaLib — yenkgg Fork
 
-A **feature-rich, highly customizable UI library** for Roblox, forked from the original **LinoriaLib** and expanded with new themes, video backgrounds, mobile support, polished animations, UI sounds, improved controls, keybind utilities, and quality-of-life improvements.
+A customized and visually enhanced fork of LinoriaLib for Roblox scripting.
 
-The goal of this fork is to keep the familiar Linoria-style API while making the library feel more modern, customizable, and enjoyable to use.
+This fork keeps the familiar LinoriaLib API while adding a softer, more modern UI style, rounded controls, mobile support, custom theme handling, UI sounds, and a built-in ESP Preview.
+
+> **Note:** This is a customized fork. Some behavior, styling, and APIs may differ from upstream LinoriaLib.
 
 ---
 
 ## Features
 
-* **Clean, modern UI** with a fully customizable color scheme.
-* **50+ built-in themes** – from dark and minimal to vibrant and neon.
-* **Video background support** – use `.webm` or `.mp4` videos as UI backgrounds per theme.
-* **ThemeManager addon** – save/load custom themes, set defaults, and switch themes on the fly.
-* **SaveManager addon** – persist UI settings and configurations.
-* **Mobile support** – mobile-aware sizing, touch interaction, and mobile-only UI controls.
-* **Mobile UI controls** – rounded **Toggle UI** and **Lock/Unlock UI** buttons that follow the active theme.
-* **Smooth tab transitions** – polished transitions when switching between tabs.
-* **Animated sliders** – smoother slider thumb/value movement.
-* **Animated dropdowns** – smooth opening and closing animations.
-* **Keybind list support** – display active keybinds in a dedicated UI element.
-* **UI sound effects** – sounds for tab switching and configuration actions.
-* **Rounded UI elements** – softer corners and a more modern appearance.
-* **Theme-aware components** – custom UI elements can register their colors with the theme registry.
-* **DPI scaling** – adjust the UI scale for different displays and devices.
-* **Notifications** – customizable notifications with optional sound effects.
-* **Developer-friendly API** – familiar Linoria-style window, tab, groupbox, and control APIs.
-* **Fully documented and modular** – easy to learn, extend, and integrate.
+### Custom UI
+
+* Rounded groupboxes
+* Rounded buttons
+* Rounded toggles
+* Rounded sliders
+* Rounded dropdowns
+* Softer borders and spacing
+* Custom theme colors
+* Improved visual consistency
+* Theme-aware custom components
+
+### Mobile Support
+
+The fork includes dedicated mobile UI functionality for supported devices.
+
+Mobile features include:
+
+* UI toggle controls
+* Touch-friendly interactions
+* UI dragging controls
+* UI lock/unlock controls
+* Rounded touch-friendly components
+* Device-aware default sizing
+
+Custom UI should avoid assuming a fixed desktop resolution.
+
+### Built-in ESP Preview
+
+The library includes a built-in ESP Preview that can be synchronized with your ESP settings.
+
+Supported preview elements include:
+
+* Box
+* Name
+* Health
+* Distance
+* Tracer
+
+Example:
+
+```lua
+Library:SetESPPreviewVisible(true)
+
+Library:SetESPPreviewOption("Box", true)
+Library:SetESPPreviewOption("Name", true)
+Library:SetESPPreviewOption("Health", true)
+Library:SetESPPreviewOption("Distance", true)
+Library:SetESPPreviewOption("Tracer", true)
+```
+
+The preview follows the library's visual style and is designed to integrate with the rest of the UI.
 
 ---
 
 ## Installation
 
-Load the library and its addons into your script:
+Load the library directly from GitHub:
 
 ```lua
-local repo = "https://raw.githubusercontent.com/yenkgg/LinoriaLib/refs/heads/main/"
-
-local Library = loadstring(game:HttpGet(repo .. "Library.lua"))()
-local ThemeManager = loadstring(game:HttpGet(repo .. "addons/ThemeManager.lua"))()
-local SaveManager = loadstring(game:HttpGet(repo .. "addons/SaveManager.lua"))()
+local Library = loadstring(game:HttpGet(
+    "https://raw.githubusercontent.com/yenkgg/LinoriaLib/refs/heads/main/Library.lua"
+))()
 ```
+
+The library also exposes itself globally through:
+
+```lua
+getgenv().Linoria
+```
+
+and, by default:
+
+```lua
+getgenv().Library
+```
+
+If you do not want the `Library` global:
+
+```lua
+getgenv().skip_getgenv_linoria = true
+```
+
+Set this before loading the library.
 
 ---
 
 ## Quick Start
 
 ```lua
+local Library = loadstring(game:HttpGet(
+    "https://raw.githubusercontent.com/yenkgg/LinoriaLib/refs/heads/main/Library.lua"
+))()
+
 local Window = Library:CreateWindow({
-    Title = "My Awesome Script",
+    Title = "My Script",
     Center = true,
     AutoShow = true,
 })
 
-local MainTab = Window:AddTab("Main", "home")
-local SettingsTab = Window:AddTab("Settings", "settings")
+local Tab = Window:AddTab("Main")
+local Box = Tab:AddLeftGroupbox("Settings")
 
-local Main = MainTab:AddLeftGroupbox("Settings")
+Box:AddLabel("Hello!")
 
-Main:AddToggle("MyToggle", {
+Box:AddButton({
+    Text = "Click Me",
+    Func = function()
+        print("Clicked!")
+    end,
+})
+
+Box:AddToggle("Enabled", {
     Text = "Enable Feature",
     Default = false,
 
     Callback = function(Value)
-        print("Toggled:", Value)
-    end
+        print("Enabled:", Value)
+    end,
 })
 
-ThemeManager:SetLibrary(Library)
-ThemeManager:SetFolder("MyScriptSettings")
-ThemeManager:ApplyToTab(SettingsTab)
+Box:AddSlider("Speed", {
+    Text = "Speed",
+    Default = 50,
+    Min = 0,
+    Max = 100,
+    Rounding = 0,
+})
 
-SaveManager:SetLibrary(Library)
-SaveManager:SetFolder("MyScriptSettings")
-SaveManager:BuildConfigSection(SettingsTab)
+Box:AddDropdown("Mode", {
+    Values = {
+        "Normal",
+        "Fast",
+        "Extreme",
+    },
+
+    Default = 1,
+    Text = "Mode",
+})
+
+Box:AddInput("Username", {
+    Text = "Username",
+    Default = "",
+    Placeholder = "Enter username...",
+})
+
+Library:Notify("Loaded!", 3)
 ```
-
----
-
-# Learning the Library
-
-The basic structure is:
-
-```text
-Library
-└── Window
-    ├── Tab
-    │   ├── Left Groupbox
-    │   │   └── Controls
-    │   └── Right Groupbox
-    │       └── Controls
-    └── Tab
-        └── ...
-```
-
-The most important pattern is:
-
-```text
-CreateWindow()
-    ↓
-AddTab()
-    ↓
-AddLeftGroupbox() / AddRightGroupbox()
-    ↓
-AddToggle() / AddButton() / AddSlider() / AddDropdown() / etc.
-```
-
-If you understand that hierarchy, you understand the core of the library.
 
 ---
 
@@ -113,349 +165,660 @@ If you understand that hierarchy, you understand the core of the library.
 
 ```lua
 local Window = Library:CreateWindow({
-    Title = "My UI",
+    Title = "My Script",
+    Size = UDim2.fromOffset(600, 500),
     Center = true,
     AutoShow = true,
-    Resizable = true,
+    NotifySide = "Right",
 })
 ```
 
-Common window options include:
+Supported options include:
 
-* `Title`
-* `Center`
-* `AutoShow`
-* `Resizable`
-* `TabPadding`
-* `ShowCustomCursor`
-* `Size`
-* `Position`
+| Option                 | Description                   |
+| ---------------------- | ----------------------------- |
+| `Title`                | Window title                  |
+| `AutoShow`             | Automatically show the window |
+| `Position`             | Starting position             |
+| `Size`                 | Window size                   |
+| `AnchorPoint`          | Window anchor point           |
+| `TabPadding`           | Tab spacing                   |
+| `MenuFadeTime`         | UI fade timing                |
+| `NotifySide`           | Notification position         |
+| `ShowCustomCursor`     | Enable custom cursor          |
+| `UnlockMouseWhileOpen` | Allow mouse use while open    |
+| `Center`               | Center the window             |
+| `Resizable`            | Enable resizing               |
 
----
-
-## Creating Tabs
-
-```lua
-local MainTab = Window:AddTab("Main", "home")
-local SettingsTab = Window:AddTab("Settings", "settings")
-```
-
-Tabs can contain multiple groupboxes and controls.
-
----
-
-## Creating Groupboxes
+Short form:
 
 ```lua
-local Left = MainTab:AddLeftGroupbox("Player")
-local Right = MainTab:AddRightGroupbox("Visuals")
-```
-
-Groupboxes are useful for keeping related settings together.
-
-For example:
-
-```text
-Player
-├── Movement
-└── Character
-
-Visuals
-├── ESP
-└── World
+local Window = Library:CreateWindow("My Script", true)
 ```
 
 ---
 
-# Controls
+## Tabs and Groupboxes
 
-## Toggle
+Create a tab:
 
 ```lua
-Main:AddToggle("Enabled", {
-    Text = "Enabled",
-    Default = false,
-
-    Callback = function(Value)
-        print("Enabled:", Value)
-    end,
-})
+local MainTab = Window:AddTab("Main")
 ```
 
-The callback receives:
+Create groupboxes:
 
 ```lua
-true
+local Left = MainTab:AddLeftGroupbox("Settings")
+local Right = MainTab:AddRightGroupbox("Information")
+```
+
+Example:
+
+```lua
+Left:AddLabel("Settings")
+Right:AddLabel("Information")
+```
+
+---
+
+## Controls
+
+### Label
+
+```lua
+Groupbox:AddLabel("Hello World")
+```
+
+Wrapped:
+
+```lua
+Groupbox:AddLabel(
+    "This is a longer piece of text that can wrap.",
+    true
+)
+```
+
+---
+
+### Divider
+
+```lua
+Groupbox:AddDivider()
 ```
 
 or:
 
 ```lua
-false
+Groupbox:AddDivider("Advanced")
 ```
 
 ---
 
-## Button
+### Button
 
 ```lua
-Main:AddButton({
-    Text = "Click Me",
-
+Groupbox:AddButton({
+    Text = "Test",
     Func = function()
-        print("Clicked!")
+        print("Button clicked")
     end,
 })
 ```
 
-Buttons should generally be used for actions rather than persistent states.
+Short form:
+
+```lua
+Groupbox:AddButton("Test", function()
+    print("Button clicked")
+end)
+```
 
 ---
 
-## Slider
+### Toggle
 
 ```lua
-Main:AddSlider("Speed", {
+local Toggle = Groupbox:AddToggle("Enabled", {
+    Text = "Enabled",
+    Default = false,
+
+    Callback = function(Value)
+        print(Value)
+    end,
+})
+```
+
+Methods:
+
+```lua
+Toggle:SetValue(true)
+Toggle:SetText("New Text")
+Toggle:SetVisible(false)
+Toggle:SetDisabled(true)
+
+Toggle:OnChanged(function(Value)
+    print(Value)
+end)
+```
+
+---
+
+### Keybind
+
+Keybinds can be attached to toggles:
+
+```lua
+Toggle:AddKeyPicker("ToggleKey", {
+    Default = Enum.KeyCode.LeftAlt,
+    Text = "Toggle Key",
+    Mode = "Toggle",
+})
+```
+
+Supported modes:
+
+```text
+Toggle
+Hold
+Always
+Press
+```
+
+Sync with a toggle:
+
+```lua
+Toggle:AddKeyPicker("ToggleKey", {
+    Default = Enum.KeyCode.X,
+    Text = "Toggle Key",
+    Mode = "Toggle",
+    SyncToggleState = true,
+})
+```
+
+---
+
+### Slider
+
+```lua
+local Slider = Groupbox:AddSlider("Speed", {
     Text = "Speed",
     Default = 50,
     Min = 0,
     Max = 100,
     Rounding = 0,
-
-    Callback = function(Value)
-        print("Speed:", Value)
-    end,
+    Suffix = "%",
 })
 ```
 
-This fork includes smoother slider thumb/value animations.
-
-For decimal values:
+Decimal values:
 
 ```lua
-Main:AddSlider("Amount", {
-    Text = "Amount",
+Groupbox:AddSlider("Multiplier", {
+    Text = "Multiplier",
     Default = 1,
     Min = 0,
     Max = 5,
     Rounding = 2,
-
-    Callback = function(Value)
-        print("Amount:", Value)
-    end,
 })
+```
+
+Methods:
+
+```lua
+Slider:SetValue(75)
+Slider:SetMin(10)
+Slider:SetMax(200)
+Slider:SetPrefix("")
+Slider:SetSuffix(" studs")
 ```
 
 ---
 
-## Dropdown
+### Dropdown
 
 ```lua
-Main:AddDropdown("Mode", {
+local Dropdown = Groupbox:AddDropdown("Mode", {
     Values = {
-        "Default",
+        "Normal",
         "Fast",
-        "Safe",
+        "Extreme",
     },
 
     Default = 1,
     Text = "Mode",
 
     Callback = function(Value)
-        print("Selected:", Value)
+        print(Value)
     end,
 })
 ```
 
-Dropdowns include smoother open/close animations.
+Multi-select:
+
+```lua
+Groupbox:AddDropdown("Features", {
+    Values = {
+        "ESP",
+        "Aimbot",
+        "Speed",
+        "Fly",
+    },
+
+    Default = {
+        "ESP",
+        "Speed",
+    },
+
+    Multi = true,
+    Text = "Features",
+})
+```
+
+Player dropdown:
+
+```lua
+Groupbox:AddDropdown("Player", {
+    SpecialType = "Player",
+    Searchable = true,
+    Text = "Player",
+})
+```
+
+Team dropdown:
+
+```lua
+Groupbox:AddDropdown("Team", {
+    SpecialType = "Team",
+    Searchable = true,
+    Text = "Team",
+})
+```
 
 ---
 
-## Input
+### Text Input
 
 ```lua
-Main:AddInput("Username", {
+Groupbox:AddInput("Username", {
     Text = "Username",
     Default = "",
+    Placeholder = "Enter username...",
 
     Callback = function(Value)
-        print("Username:", Value)
+        print(Value)
     end,
+})
+```
+
+Numeric input:
+
+```lua
+Groupbox:AddInput("Number", {
+    Text = "Number",
+    Default = "",
+    Numeric = true,
+    Finished = true,
 })
 ```
 
 ---
 
-## Label
+### Color Picker
 
 ```lua
-Main:AddLabel("Welcome to my script!")
+local Toggle = Groupbox:AddToggle("CustomColor", {
+    Text = "Custom Color",
+    Default = true,
+})
+
+local ColorPicker = Toggle:AddColorPicker("Color", {
+    Default = Color3.fromRGB(115, 145, 255),
+    Title = "Accent Color",
+
+    Callback = function(Color, Transparency)
+        print(Color, Transparency)
+    end,
+})
 ```
 
-Labels are useful for descriptions, information, and section text.
+Transparency is supported:
+
+```lua
+Toggle:AddColorPicker("Color", {
+    Default = Color3.fromRGB(255, 80, 80),
+    Transparency = 0.25,
+})
+```
 
 ---
 
-# Keybinds
+## Tabboxes
 
-Controls can be paired with keybinds through the key-picker system.
-
-Example:
+Create a tabbox:
 
 ```lua
-local Toggle = Main:AddToggle("Enabled", {
-    Text = "Enabled",
+local Tabbox = MainTab:AddLeftTabbox("Options")
+```
+
+Create inner tabs:
+
+```lua
+local First = Tabbox:AddTab("First")
+local Second = Tabbox:AddTab("Second")
+```
+
+Then use controls normally:
+
+```lua
+First:AddLabel("First tab")
+
+Second:AddToggle("Example", {
+    Text = "Example",
+    Default = false,
+})
+```
+
+---
+
+## Images
+
+```lua
+Groupbox:AddImage("Image", {
+    Image = "rbxassetid://9619665977",
+    Height = 100,
+})
+```
+
+---
+
+## Videos
+
+```lua
+Groupbox:AddVideo("Video", {
+    Video = "rbxassetid://VIDEO_ID",
+    Height = 200,
+    Looped = true,
+    Playing = true,
+    Volume = 1,
+})
+```
+
+---
+
+## ViewportFrames
+
+```lua
+local Part = Instance.new("Part")
+Part.Size = Vector3.new(3, 3, 3)
+Part.Anchored = true
+
+Groupbox:AddViewport("Preview", {
+    Object = Part,
+    Height = 180,
+    Clone = true,
+})
+```
+
+---
+
+## Dependencies
+
+Create a dependency box:
+
+```lua
+local Enabled = Groupbox:AddToggle("Enabled", {
+    Text = "Enable Advanced",
     Default = false,
 })
 
-Toggle:AddKeyPicker("EnabledKey", {
-    Default = "F",
-    Mode = "Toggle",
-    Text = "Toggle Enabled",
+local Advanced = Groupbox:AddDependencyBox()
+
+Advanced:AddSlider("Power", {
+    Text = "Power",
+    Default = 50,
+    Min = 0,
+    Max = 100,
+    Rounding = 0,
+})
+
+Advanced:SetupDependencies({
+    { Toggles.Enabled, true }
 })
 ```
 
-Keybinds are useful for activating features without opening the UI.
-
----
-
-# Keybind List
-
-The library includes a keybind-list UI for displaying active keybinds.
-
-The keybind frame is exposed through:
+Dependency groupboxes are also supported:
 
 ```lua
-Library.KeybindFrame
-```
-
-The library also exposes:
-
-```lua
-Library.ShowToggleFrameInKeybinds
-```
-
-which controls whether the UI toggle is displayed in the keybind list.
-
-This makes it possible to build a clean floating keybind panel while using the library's existing keybind system.
-
----
-
-# Themes
-
-The ThemeManager comes with **56 built-in themes** and supports custom themes.
-
-Some included themes are:
-
-| Theme Name         | Accent Color | Vibe                           |
-| ------------------ | ------------ | ------------------------------ |
-| **Default**        | `#0055ff`    | Classic blue                   |
-| **Neon Genesis**   | `#ff00ff`    | Neon pink & purple             |
-| **Cyberpunk**      | `#00ffff`    | Bright cyan & dark blue        |
-| **Lavender Dream** | `#a885d4`    | Soft purple                    |
-| **Sunset Glow**    | `#ff6b35`    | Warm orange & pink             |
-| **Monochrome**     | `#888888`    | Sleek grayscale                |
-| **Inferno**        | `#ff2200`    | Fiery red                      |
-| **Neon Nights**    | `#ff44ff`    | Animated neon / MP4 background |
-
-> **Note:** Neon Nights currently has known bugs.
-
-All available themes can be selected through the ThemeManager UI.
-
----
-
-# Custom Themes
-
-A theme can define colors such as:
-
-```lua
-["My Theme"] = {
-    FontColor = "ffffff",
-    MainColor = "0a0a1a",
-    AccentColor = "00ccff",
-    BackgroundColor = "0f0f20",
-    OutlineColor = "1e1e3c",
-}
-```
-
-You can also add a video background:
-
-```lua
-["My Theme"] = {
-    FontColor = "ffffff",
-    MainColor = "0a0a1a",
-    AccentColor = "00ccff",
-    BackgroundColor = "0f0f20",
-    OutlineColor = "1e1e3c",
-    VideoLink = "https://example.com/background.webm",
-}
+Groupbox:AddDependencyGroupbox()
 ```
 
 ---
 
-# Video Backgrounds
+## Notifications
 
-Themes can optionally have a video background.
-
-Supported formats:
-
-```text
-.webm
-.mp4
-```
-
-Example:
+Simple:
 
 ```lua
-VideoLink = "https://example.com/background.webm"
+Library:Notify("Hello!", 2)
 ```
 
-The video background is configured per theme.
+Structured:
+
+```lua
+Library:Notify({
+    Title = "Success",
+    Description = "The operation completed.",
+    Time = 3,
+})
+```
 
 ---
 
-# ThemeManager
+## Watermark
 
-ThemeManager handles theme functionality.
-
-Setup:
+Show:
 
 ```lua
-ThemeManager:SetLibrary(Library)
-ThemeManager:SetFolder("MyScriptSettings")
-ThemeManager:ApplyToTab(SettingsTab)
+Library:SetWatermarkVisibility(true)
 ```
 
-ThemeManager provides:
+Hide:
 
-* Theme selection
-* Custom theme creation
-* Custom theme deletion
-* Theme saving
-* Theme loading
-* Default theme support
-* Video background configuration
-* Switching themes on the fly
+```lua
+Library:SetWatermarkVisibility(false)
+```
+
+Set text:
+
+```lua
+Library:SetWatermark("My Script • v1.0")
+```
 
 ---
 
-# Theme-Aware UI
+## UI Scaling
 
-The library has a color registry system that allows UI components to follow theme changes.
+Change the UI scale:
 
-Important colors include:
+```lua
+Library:SetDPIScale(100)
+```
+
+Examples:
+
+```lua
+Library:SetDPIScale(75)
+Library:SetDPIScale(100)
+Library:SetDPIScale(125)
+```
+
+---
+
+## Opening and Closing
+
+Toggle:
+
+```lua
+Library:Toggle()
+```
+
+Explicitly open:
+
+```lua
+Library:Toggle(true)
+```
+
+Explicitly close:
+
+```lua
+Library:Toggle(false)
+```
+
+You can also toggle the window directly:
+
+```lua
+Window:Toggle(true)
+Window:Toggle(false)
+```
+
+---
+
+## ESP Preview
+
+The fork includes a built-in ESP Preview.
+
+Create it manually if needed:
+
+```lua
+Library:CreateESPPreview()
+```
+
+Show:
+
+```lua
+Library:SetESPPreviewVisible(true)
+```
+
+Hide:
+
+```lua
+Library:SetESPPreviewVisible(false)
+```
+
+Change individual options:
+
+```lua
+Library:SetESPPreviewOption("Box", true)
+Library:SetESPPreviewOption("Name", true)
+Library:SetESPPreviewOption("Health", true)
+Library:SetESPPreviewOption("Distance", true)
+Library:SetESPPreviewOption("Tracer", true)
+```
+
+Disable an option:
+
+```lua
+Library:SetESPPreviewOption("Tracer", false)
+```
+
+### ESP Example
+
+```lua
+local ESPTab = Window:AddTab("ESP")
+local ESP = ESPTab:AddLeftGroupbox("ESP Settings")
+
+ESP:AddToggle("Enabled", {
+    Text = "Enabled",
+    Default = true,
+
+    Callback = function(Value)
+        Library:SetESPPreviewVisible(Value)
+    end,
+})
+
+ESP:AddToggle("Box", {
+    Text = "Box",
+    Default = true,
+
+    Callback = function(Value)
+        Library:SetESPPreviewOption("Box", Value)
+    end,
+})
+
+ESP:AddToggle("Name", {
+    Text = "Name",
+    Default = true,
+
+    Callback = function(Value)
+        Library:SetESPPreviewOption("Name", Value)
+    end,
+})
+
+ESP:AddToggle("Health", {
+    Text = "Health",
+    Default = true,
+
+    Callback = function(Value)
+        Library:SetESPPreviewOption("Health", Value)
+    end,
+})
+
+ESP:AddToggle("Distance", {
+    Text = "Distance",
+    Default = true,
+
+    Callback = function(Value)
+        Library:SetESPPreviewOption("Distance", Value)
+    end,
+})
+
+ESP:AddToggle("Tracer", {
+    Text = "Tracer",
+    Default = true,
+
+    Callback = function(Value)
+        Library:SetESPPreviewOption("Tracer", Value)
+    end,
+})
+```
+
+The ESP Preview is intended to represent your ESP configuration, while your actual ESP renderer should remain separate.
+
+---
+
+## Theme System
+
+The fork provides several theme colors:
 
 ```lua
 Library.FontColor
 Library.MainColor
 Library.BackgroundColor
 Library.AccentColor
+Library.DisabledAccentColor
 Library.OutlineColor
+Library.DisabledOutlineColor
+Library.DisabledTextColor
+Library.RiskColor
+Library.Black
 ```
 
-When creating custom components, register theme-aware properties instead of hard-coding colors.
+When creating custom components, use the existing theme instead of introducing another palette.
 
 Example:
+
+```lua
+Frame.BackgroundColor3 = Library.MainColor
+Frame.BorderColor3 = Library.OutlineColor
+Label.TextColor3 = Library.FontColor
+```
+
+---
+
+## Theme Registry
+
+Theme-dependent instances should use the registry:
 
 ```lua
 Library:AddToRegistry(MyFrame, {
@@ -464,717 +827,522 @@ Library:AddToRegistry(MyFrame, {
 })
 ```
 
-This allows the component to update when the active theme changes.
+This allows the component to automatically follow theme changes.
 
----
-
-# UI Animations
-
-This fork adds several visual improvements.
-
-## Smooth Tab Transitions
-
-Switching tabs uses smoother transitions instead of instantly replacing the visible content.
-
-The goal is to make navigation feel more fluid without changing the underlying tab API.
-
-## Slider Thumb Animations
-
-Slider thumbs smoothly move toward their target position/value.
-
-## Dropdown Animations
-
-Dropdowns smoothly open and close instead of appearing instantly.
-
-These animations are intended to improve the appearance of the library while keeping controls responsive.
-
----
-
-# UI Sounds
-
-This fork includes Roblox sound effects for common UI actions.
-
-## Tab Switching
-
-The tab switching sound uses Roblox asset ID:
-
-```text
-624706518
-```
-
-The library exposes:
+Avoid hardcoding colors for theme-dependent components:
 
 ```lua
-Library.TabSwitchSoundId
+-- Avoid
+MyFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 ```
-
-and:
-
-```lua
-Library:PlayTabSound()
-```
-
-You can manually play it with:
-
-```lua
-Library:PlayTabSound()
-```
-
----
-
-## Config Actions
-
-The config sound uses Roblox asset ID:
-
-```text
-18628653569
-```
-
-The library exposes:
-
-```lua
-Library.ConfigSoundId
-```
-
-and:
-
-```lua
-Library:PlayConfigSound()
-```
-
-Example:
-
-```lua
-Library:PlayConfigSound()
-```
-
-Use it after successful config operations such as saving or loading.
-
----
-
-## Generic UI Sounds
-
-The library also provides:
-
-```lua
-Library:PlayUISound(SoundId, Volume, PlaybackSpeed)
-```
-
-Example:
-
-```lua
-Library:PlayUISound(624706518, 0.5, 1)
-```
-
-This can be used for custom UI interactions.
-
----
-
-# Notifications
-
-Basic notification:
-
-```lua
-Library:Notify("Hello!", 3)
-```
-
-Or use a notification table:
-
-```lua
-Library:Notify({
-    Title = "Success",
-    Description = "Config saved!",
-    Time = 3,
-})
-```
-
-Notifications can specify a sound:
-
-```lua
-Library:Notify({
-    Title = "Success",
-    Description = "Done!",
-    Time = 3,
-    SoundId = Library.ConfigSoundId,
-})
-```
-
-Config-related notifications can automatically use the config sound when appropriate.
-
----
-
-# Mobile Support
-
-Mobile support is one of the major improvements in this fork.
-
-The library exposes:
-
-```lua
-Library.IsMobile
-```
-
-Check it with:
-
-```lua
-if Library.IsMobile then
-    print("Mobile device detected")
-end
-```
-
-Mobile support includes:
-
-* Touch-aware dragging
-* Mobile-aware sizing
-* Larger touch targets
-* Mobile-only UI controls
-* Rounded Toggle UI button
-* Rounded Lock/Unlock UI button
-* Theme-aware mobile controls
-* Mobile UI state handling
-
----
-
-# Mobile Toggle UI
-
-Mobile users have a dedicated **Toggle UI** button.
-
-It allows the main library window to be shown or hidden without requiring a desktop keyboard shortcut.
-
-The button:
-
-* Is rounded
-* Uses the current theme
-* Uses the current accent color
-* Is designed for touch input
-* Only appears on mobile
-
----
-
-# Mobile Lock / Unlock UI
-
-Mobile users can lock the UI to prevent accidental dragging.
-
-The lock state uses:
-
-```lua
-Library.CantDragForced
-```
-
-Lock:
-
-```lua
-Library.CantDragForced = true
-```
-
-Unlock:
-
-```lua
-Library.CantDragForced = false
-```
-
-The mobile control switches between:
-
-```text
-Lock UI
-```
-
-and:
-
-```text
-Unlock UI
-```
-
-while following the current theme.
-
----
-
-# DPI Scaling
-
-The library supports DPI scaling for different displays.
-
-Example:
-
-```lua
-Library:SetDPIScale(100)
-```
-
-Smaller:
-
-```lua
-Library:SetDPIScale(90)
-```
-
-Larger:
-
-```lua
-Library:SetDPIScale(110)
-```
-
-This is especially useful when supporting both desktop and mobile.
-
----
-
-# SaveManager
-
-SaveManager is used to persist UI configuration.
-
-Setup:
-
-```lua
-SaveManager:SetLibrary(Library)
-SaveManager:SetFolder("MyScriptSettings")
-SaveManager:BuildConfigSection(SettingsTab)
-```
-
-It can save and load supported UI settings such as:
-
-* Toggles
-* Sliders
-* Dropdowns
-* Keybinds
-* Other supported UI values
-
-Configuration files use JSON.
-
----
-
-# Config Sounds
-
-The config sound can be played after a successful configuration operation:
-
-```lua
-Library:PlayConfigSound()
-```
-
-For example:
-
-```lua
-SaveButton = Config:AddButton({
-    Text = "Save Config",
-
-    Func = function()
-        -- Save config here
-
-        Library:PlayConfigSound()
-        Library:Notify("Config saved!", 2)
-    end,
-})
-```
-
-The important rule is to play the sound **after** the operation succeeds.
-
----
-
-# Creating Custom Components
-
-When creating custom UI components, use the library's creation and theme systems.
-
-Example:
-
-```lua
-local Frame = Library:Create("Frame", {
-    BackgroundColor3 = Library.MainColor,
-    BorderColor3 = Library.OutlineColor,
-    Size = UDim2.fromOffset(200, 50),
-    Parent = SomeContainer,
-})
-
-Library:AddToRegistry(Frame, {
-    BackgroundColor3 = "MainColor",
-    BorderColor3 = "OutlineColor",
-})
-```
-
-This keeps custom components compatible with themes.
-
----
-
-# Debugging
-
-If something doesn't work, check these first.
-
-## Duplicate IDs
-
-Make sure control IDs are unique:
-
-```lua
-Main:AddToggle("PlayerEnabled", ...)
-Settings:AddToggle("Notifications", ...)
-```
-
-Avoid:
-
-```lua
-Main:AddToggle("Enabled", ...)
-Main:AddToggle("Enabled", ...)
-```
-
----
-
-## Dropdown Defaults
-
-Make sure the default index exists:
-
-```lua
-Values = {
-    "One",
-    "Two",
-    "Three",
-},
-
-Default = 1,
-```
-
----
-
-## Theme Colors
-
-If a custom component does not update when the theme changes, check that its theme-aware properties were registered:
-
-```lua
-Library:AddToRegistry(Frame, {
-    BackgroundColor3 = "MainColor",
-})
-```
-
----
-
-# Recommended Way to Learn
-
-If you're new to the library, learn it in this order.
-
-## 1. Learn the hierarchy
-
-Understand:
-
-```text
-Window
-↓
-Tab
-↓
-Groupbox
-↓
-Control
-```
-
-## 2. Learn the basic controls
-
-Start with:
-
-```text
-Label
-Button
-Toggle
-Slider
-Dropdown
-Input
-```
-
-## 3. Learn callbacks
-
-Understand:
-
-```lua
-Callback = function(Value)
-end
-```
-
-This is how UI settings connect to your script's logic.
-
-## 4. Learn keybinds
-
-Learn the key-picker system and how keybinds interact with controls and the keybind list.
-
-## 5. Learn themes
-
-Study:
-
-```lua
-Library:AddToRegistry()
-```
-
-and the main library color properties.
-
-## 6. Learn the addons
-
-Then learn:
-
-```text
-ThemeManager
-SaveManager
-```
-
-## 7. Study the source
-
-Don't read `Library.lua` from top to bottom.
-
-Search for the API you're learning:
-
-```text
-CreateWindow
-AddTab
-AddToggle
-AddSlider
-AddDropdown
-AddButton
-AddInput
-Notify
-AddToRegistry
-UpdateColorsUsingRegistry
-```
-
-Find the function and study that section.
-
----
-
-# Best Practices
-
-## Use descriptive IDs
-
-Good:
-
-```lua
-PlayerEnabled
-PlayerSpeed
-VisualsESP
-Notifications
-```
-
-Avoid:
-
-```lua
-Toggle1
-Toggle2
-Toggle3
-```
-
----
-
-## Keep callbacks simple
-
-Good:
-
-```lua
-Callback = function(Value)
-    Enabled = Value
-end
-```
-
-Then handle the actual feature elsewhere.
-
-Avoid putting an entire feature implementation inside a UI callback.
-
----
-
-## Organize groupboxes
-
-Good:
-
-```text
-Player
-├── Movement
-└── Combat
-
-Visuals
-├── ESP
-└── World
-```
-
-Avoid putting dozens of unrelated controls into one groupbox.
-
----
-
-## Keep mobile in mind
-
-When creating custom controls:
-
-* Use reasonable spacing.
-* Make touch targets large enough.
-* Avoid tiny buttons.
-* Test portrait and landscape layouts.
-* Make sure the UI can still be moved or locked easily.
-
----
-
-## Keep custom UI theme-aware
 
 Prefer:
 
 ```lua
-Library.MainColor
-Library.BackgroundColor
-Library.AccentColor
-Library.OutlineColor
+-- Recommended
+Library:AddToRegistry(MyFrame, {
+    BackgroundColor3 = "MainColor",
+})
 ```
 
-and the registry system over hard-coded colors.
+---
+
+## Custom UI Styling
+
+When extending the fork, follow its existing visual language:
+
+* Small corner radii for controls
+* Larger radii for containers
+* Thin borders
+* Soft surfaces
+* Consistent spacing
+* Library theme colors
+* Existing typography
+* Existing hover behavior
+* Registry-based theme support
+
+The goal is for custom components to look native to the library rather than appearing as separate UI elements.
 
 ---
 
-# Recommended Project Structure
+## UI Sounds
 
-For a larger project:
-
-```text
-MyProject/
-├── main.lua
-├── features/
-│   ├── player.lua
-│   ├── visuals.lua
-│   └── misc.lua
-├── ui/
-│   ├── main.lua
-│   └── settings.lua
-└── Library.lua
-```
-
-Keeping UI and feature logic separate makes larger projects easier to maintain.
-
----
-
-# API Quick Reference
-
-| API                                   | Purpose                             |
-| ------------------------------------- | ----------------------------------- |
-| `Library:CreateWindow()`              | Create a window                     |
-| `Window:AddTab()`                     | Create a tab                        |
-| `Tab:AddLeftGroupbox()`               | Create a left groupbox              |
-| `Tab:AddRightGroupbox()`              | Create a right groupbox             |
-| `Groupbox:AddLabel()`                 | Add a label                         |
-| `Groupbox:AddButton()`                | Add a button                        |
-| `Groupbox:AddToggle()`                | Add a toggle                        |
-| `Groupbox:AddSlider()`                | Add a slider                        |
-| `Groupbox:AddDropdown()`              | Add a dropdown                      |
-| `Groupbox:AddInput()`                 | Add an input                        |
-| `Library:Notify()`                    | Show a notification                 |
-| `Library:PlayTabSound()`              | Play the tab sound                  |
-| `Library:PlayConfigSound()`           | Play the config sound               |
-| `Library:PlayUISound()`               | Play a custom UI sound              |
-| `Library:SetDPIScale()`               | Change UI scale                     |
-| `Library:AddToRegistry()`             | Register theme-aware properties     |
-| `Library:UpdateColorsUsingRegistry()` | Update registered colors            |
-| `Library:AttemptSave()`               | Attempt a SaveManager save          |
-| `Library.IsMobile`                    | Check mobile status                 |
-| `Library.CanDrag`                     | Dragging state                      |
-| `Library.CantDragForced`              | Force-lock dragging                 |
-| `Library.KeybindFrame`                | Keybind list UI                     |
-| `Library.ShowToggleFrameInKeybinds`   | Show/hide UI toggle in keybind list |
-| `Library.TabSwitchSoundId`            | Tab sound asset ID                  |
-| `Library.ConfigSoundId`               | Config sound asset ID               |
-
----
-
-# Complete Example
+Play a UI sound:
 
 ```lua
-local repo = "https://raw.githubusercontent.com/yenkgg/LinoriaLib/refs/heads/main/"
+Library:PlayUISound(SoundId, Volume, Speed)
+```
 
-local Library = loadstring(game:HttpGet(repo .. "Library.lua"))()
-local ThemeManager = loadstring(game:HttpGet(repo .. "addons/ThemeManager.lua"))()
-local SaveManager = loadstring(game:HttpGet(repo .. "addons/SaveManager.lua"))()
+Example:
 
-local Window = Library:CreateWindow({
-    Title = "Example UI",
-    Center = true,
-    AutoShow = true,
-    Resizable = true,
-})
+```lua
+Library:PlayUISound(123456789, 0.5, 1)
+```
 
-local MainTab = Window:AddTab("Main", "home")
-local SettingsTab = Window:AddTab("Settings", "settings")
+Tab sound:
 
-local Player = MainTab:AddLeftGroupbox("Player")
-local Visuals = MainTab:AddRightGroupbox("Visuals")
+```lua
+Library:PlayTabSound()
+```
 
-Player:AddToggle("Enabled", {
+Config sound:
+
+```lua
+Library:PlayConfigSound()
+```
+
+---
+
+## Unloading
+
+Unload the library:
+
+```lua
+Library:Unload()
+```
+
+Register an unload callback:
+
+```lua
+Library:OnUnload(function()
+    print("Library unloaded")
+end)
+```
+
+If your script creates connections or instances outside the library, clean those up yourself.
+
+---
+
+## Recommended Script Structure
+
+For larger scripts, keep the UI and feature logic separate:
+
+```text
+Script
+│
+├── Load Library
+│
+├── Create Window
+│
+├── Main
+│   ├── General
+│   ├── Movement
+│   └── Misc
+│
+├── Visuals
+│   ├── ESP
+│   ├── Chams
+│   └── Other Visuals
+│
+├── Combat
+│   ├── Aimbot
+│   └── Targeting
+│
+├── Settings
+│   ├── UI
+│   ├── Keybinds
+│   └── Configuration
+│
+└── Cleanup
+```
+
+Example:
+
+```lua
+local ESPState = {
+    Enabled = false,
+    Box = true,
+    Name = true,
+    Health = true,
+    Distance = true,
+    Tracer = true,
+}
+
+local function UpdateESP()
+    -- Actual ESP implementation.
+end
+
+local ESPTab = Window:AddTab("ESP")
+local Groupbox = ESPTab:AddLeftGroupbox("ESP")
+
+Groupbox:AddToggle("ESPEnabled", {
     Text = "Enabled",
-    Default = false,
+    Default = ESPState.Enabled,
 
     Callback = function(Value)
-        print("Enabled:", Value)
+        ESPState.Enabled = Value
+
+        UpdateESP()
+
+        Library:SetESPPreviewVisible(Value)
     end,
 })
+```
 
-Player:AddSlider("Speed", {
-    Text = "Speed",
+This keeps the UI layer and feature implementation separate and easier to maintain.
+
+---
+
+## API Reference
+
+### Library
+
+```lua
+Library:CreateWindow(...)
+Library:Toggle(...)
+Library:Notify(...)
+Library:SetWatermark(...)
+Library:SetWatermarkVisibility(...)
+Library:SetNotifySide(...)
+Library:SetDPIScale(...)
+Library:PlayUISound(...)
+Library:PlayTabSound(...)
+Library:PlayConfigSound(...)
+Library:CreateESPPreview(...)
+Library:SetESPPreviewVisible(...)
+Library:SetESPPreviewOption(...)
+Library:Unload(...)
+Library:OnUnload(...)
+```
+
+### Window
+
+```lua
+Window:AddTab(...)
+Window:Toggle(...)
+```
+
+### Tab
+
+```lua
+Tab:AddLeftGroupbox(...)
+Tab:AddRightGroupbox(...)
+Tab:AddLeftTabbox(...)
+Tab:AddRightTabbox(...)
+Tab:AddTabbox(...)
+Tab:ShowTab()
+Tab:HideTab()
+Tab:SetName(...)
+Tab:SetLayoutOrder(...)
+Tab:GetSides()
+```
+
+### Groupbox
+
+```lua
+Groupbox:AddLabel(...)
+Groupbox:AddDivider(...)
+Groupbox:AddButton(...)
+Groupbox:AddToggle(...)
+Groupbox:AddSlider(...)
+Groupbox:AddDropdown(...)
+Groupbox:AddInput(...)
+Groupbox:AddImage(...)
+Groupbox:AddViewport(...)
+Groupbox:AddVideo(...)
+Groupbox:AddUIPassthrough(...)
+Groupbox:AddTabbox(...)
+Groupbox:AddDependencyBox(...)
+Groupbox:AddDependencyGroupbox(...)
+```
+
+### Toggle
+
+```lua
+Toggle:SetValue(...)
+Toggle:OnChanged(...)
+Toggle:SetVisible(...)
+Toggle:SetDisabled(...)
+Toggle:SetText(...)
+Toggle:AddKeyPicker(...)
+Toggle:AddColorPicker(...)
+```
+
+### Slider
+
+```lua
+Slider:SetValue(...)
+Slider:OnChanged(...)
+Slider:SetMin(...)
+Slider:SetMax(...)
+Slider:SetVisible(...)
+Slider:SetDisabled(...)
+Slider:SetText(...)
+Slider:SetPrefix(...)
+Slider:SetSuffix(...)
+```
+
+### Dropdown
+
+```lua
+Dropdown:SetValue(...)
+Dropdown:OnChanged(...)
+Dropdown:SetValues(...)
+Dropdown:AddValues(...)
+Dropdown:SetDisabledValues(...)
+Dropdown:AddDisabledValues(...)
+Dropdown:SetVisible(...)
+Dropdown:SetDisabled(...)
+Dropdown:OpenDropdown()
+Dropdown:CloseDropdown()
+Dropdown:GetActiveValues()
+Dropdown:SetText(...)
+```
+
+### KeyPicker
+
+```lua
+KeyPicker:SetValue(...)
+KeyPicker:GetState()
+KeyPicker:OnClick(...)
+KeyPicker:OnChanged(...)
+KeyPicker:DoClick()
+KeyPicker:SetModePickerVisibility(...)
+KeyPicker:GetModePickerVisibility(...)
+```
+
+### ColorPicker
+
+```lua
+ColorPicker:SetValue(...)
+ColorPicker:SetValueRGB(...)
+ColorPicker:SetHSVFromRGB(...)
+ColorPicker:OnChanged(...)
+ColorPicker:Show()
+ColorPicker:Hide()
+```
+
+---
+
+## Common Mistakes
+
+### Reusing IDs
+
+Controls such as toggles, sliders, dropdowns, and inputs should have unique IDs.
+
+Incorrect:
+
+```lua
+Groupbox:AddToggle("Example", {
+    Text = "First",
+})
+
+Groupbox:AddToggle("Example", {
+    Text = "Second",
+})
+```
+
+Correct:
+
+```lua
+Groupbox:AddToggle("FirstToggle", {
+    Text = "First",
+})
+
+Groupbox:AddToggle("SecondToggle", {
+    Text = "Second",
+})
+```
+
+### Missing Slider Fields
+
+A slider should normally include:
+
+```lua
+Default
+Min
+Max
+Rounding
+Text
+```
+
+Example:
+
+```lua
+Groupbox:AddSlider("Example", {
+    Text = "Example",
     Default = 50,
     Min = 0,
     Max = 100,
     Rounding = 0,
-
-    Callback = function(Value)
-        print("Speed:", Value)
-    end,
 })
+```
 
-Visuals:AddDropdown("Mode", {
+### Missing Dropdown Values
+
+A dropdown requires:
+
+```lua
+Values = {...}
+```
+
+Example:
+
+```lua
+Groupbox:AddDropdown("Example", {
     Values = {
-        "Default",
-        "Detailed",
-        "Minimal",
+        "A",
+        "B",
+        "C",
     },
 
     Default = 1,
-    Text = "Mode",
-
-    Callback = function(Value)
-        print("Mode:", Value)
-    end,
+    Text = "Example",
 })
-
-Visuals:AddButton({
-    Text = "Test Notification",
-
-    Func = function()
-        Library:Notify({
-            Title = "Test",
-            Description = "Everything is working!",
-            Time = 3,
-        })
-    end,
-})
-
-ThemeManager:SetLibrary(Library)
-ThemeManager:SetFolder("MyScriptSettings")
-ThemeManager:ApplyToTab(SettingsTab)
-
-SaveManager:SetLibrary(Library)
-SaveManager:SetFolder("MyScriptSettings")
-SaveManager:BuildConfigSection(SettingsTab)
 ```
 
+### Invalid Button Callback
+
+Incorrect:
+
+```lua
+Groupbox:AddButton({
+    Text = "Test",
+    Func = "hello",
+})
+```
+
+Correct:
+
+```lua
+Groupbox:AddButton({
+    Text = "Test",
+    Func = function()
+        print("hello")
+    end,
+})
+```
+
+### Rebuilding the Theme
+
+Do not create an unrelated color system for custom components.
+
+Use:
+
+```lua
+Library.MainColor
+Library.BackgroundColor
+Library.OutlineColor
+Library.AccentColor
+Library.FontColor
+```
+
+and the registry system where appropriate.
+
+### Replacing the ESP Preview
+
+The built-in ESP Preview already exists.
+
+Use:
+
+```lua
+Library:SetESPPreviewVisible(...)
+Library:SetESPPreviewOption(...)
+```
+
+instead of creating a second preview window.
+
 ---
 
-# Credits
+## Fork Differences
 
-* **Original LinoriaLib** – for the original base UI library and API.
-* **Yenkgg** – fork, theme expansions, video background support, mobile improvements, animations, sounds, and quality-of-life improvements.
-* **ChatGPT and DeepSeek** – development assistance, ideas, documentation, and implementation help.
+This fork is not an untouched upstream LinoriaLib build.
 
-Please preserve the original project's license and attribution requirements when redistributing this fork.
+Custom additions and changes include:
+
+* Rounded groupboxes
+* Rounded controls
+* Rounded dropdowns
+* Rounded buttons
+* Rounded toggles
+* Rounded sliders
+* Custom theme colors
+* Custom image handling
+* Mobile UI controls
+* Built-in ESP Preview
+* ESP Preview option synchronization
+* UI sound helpers
+* Custom cursor support
+* Watermark controls
+* Additional visual polish
+* Theme registry support for custom components
+* UI scaling improvements
+
+When extending the library, preserve these conventions.
+
+In particular, custom components should use the same:
+
+* `MainColor`
+* `BackgroundColor`
+* `OutlineColor`
+* `AccentColor`
+* `FontColor`
+* Corner-radius philosophy
+* Typography
+* Spacing
+* Hover behavior
+* Theme registry
+
+This keeps new components visually consistent with the rest of the fork.
 
 ---
 
-# License
+## Documentation
 
-This project is available under the **MIT License**, subject to the applicable licensing and attribution requirements of the original LinoriaLib project and included third-party work.
+For the complete API and usage guide, see:
+
+`Instructions.md`
+
+The documentation covers:
+
+* Windows
+* Tabs
+* Groupboxes
+* Labels
+* Buttons
+* Toggles
+* Keybinds
+* Sliders
+* Dropdowns
+* Inputs
+* Color pickers
+* Tabboxes
+* Images
+* Viewports
+* Videos
+* Dependencies
+* Notifications
+* Watermarks
+* UI scaling
+* Mobile support
+* ESP Preview
+* Theme handling
+* UI sounds
+* Cleanup
+* API reference
 
 ---
 
-# Support
+## Credits
 
-If you encounter bugs, have suggestions, or want to request a feature, open an issue on GitHub or contact the project through the Discord server:
+This project is a customized fork of LinoriaLib.
 
-**Discord:** [our discord](https://discord.gg/V4GzTxZvYn)
+Original LinoriaLib functionality and concepts belong to their respective original authors.
 
-When reporting a bug, include:
+Custom modifications, styling, features, and fork-specific functionality are maintained by **yenkgg**.
 
-1. What happened
-2. What you expected
-3. Steps to reproduce it
-4. Any relevant errors
-5. Whether the issue occurs on desktop, mobile, or both
+If you have any features or bugs report in the discord server: https://discord.gg/V4GzTxZvYn
 
 ---
 
-**Happy scripting!**
+## License
+
+Open Source 👍
+
+---
+
+## Repository
+
+**LinoriaLib — yenkgg Fork**
+
+A customized LinoriaLib experience focused on modern styling, rounded UI, mobile support, and additional built-in functionality.
