@@ -1906,4 +1906,4 @@ Have fun scripting!
 
 ---
 
-**Library covered by this guide:** `Library (5).lua`
+**Library covered by this guide:** `Library.lua`
