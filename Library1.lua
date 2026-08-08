@@ -2003,10 +2003,10 @@ do
         return self
     end
 
+    -- =================== ROUNDED COLOR PICKER ===================
     function BaseAddonsFuncs:AddColorPicker(Idx, Info)
         local ParentObj = self
         local ToggleLabel = self.TextLabel
-        --local Container = self.Container;
 
         assert(Info.Default, string.format("AddColorPicker (IDX: %s): Missing default value.", tostring(Idx)))
 
@@ -2042,7 +2042,6 @@ do
 
         function ColorPicker:SetHSVFromRGB(Color)
             local H, S, V = Color:ToHSV()
-
             ColorPicker.Hue = H
             ColorPicker.Sat = S
             ColorPicker.Vib = V
@@ -2059,8 +2058,7 @@ do
             Parent = ToggleLabel;
         })
 
-        -- Transparency image taken from https://github.com/matas3535/SplixPrivateDrawingLibrary/blob/main/Library.lua cus i'm lazy
-        -- local CheckerFrame = 
+        -- Transparency image
         Library:Create("ImageLabel", {
             BorderSizePixel = 0;
             Size = UDim2.new(0, 27, 0, 13);
@@ -2070,15 +2068,10 @@ do
             Parent = DisplayFrame;
         })
 
-        -- 1/16/23
-        -- Rewrote this to be placed inside the Library ScreenGui
-        -- There was some issue which caused RelativeOffset to be way off
-        -- Thus the color picker would never show
-
+        -- ========== ROUNDED PICKER FRAME ==========
         local PickerFrameOuter = Library:Create("Frame", {
             Name = "Color";
-            BackgroundColor3 = Color3.new(1, 1, 1);
-            BorderColor3 = Color3.new(0, 0, 0);
+            BackgroundColor3 = Library.BackgroundColor; -- Use library background
             Position = UDim2.fromOffset(DisplayFrame.AbsolutePosition.X, DisplayFrame.AbsolutePosition.Y + 18),
             Size = UDim2.fromOffset(230, Info.Transparency and 271 or 253);
             Visible = false;
@@ -2086,10 +2079,20 @@ do
             Parent = ScreenGui,
         })
 
-        DisplayFrame:GetPropertyChangedSignal("AbsolutePosition"):Connect(function()
-            PickerFrameOuter.Position = UDim2.fromOffset(DisplayFrame.AbsolutePosition.X, DisplayFrame.AbsolutePosition.Y + 18)
-        end)
+        -- Apply rounded corners and stroke
+        Library:Create("UICorner", {
+            CornerRadius = UDim.new(0, 8); -- 8px radius
+            Parent = PickerFrameOuter;
+        })
+        Library:Create("UIStroke", {
+            Color = Library.OutlineColor;
+            Transparency = 0.55;
+            Thickness = 1;
+            ApplyStrokeMode = Enum.ApplyStrokeMode.Border;
+            Parent = PickerFrameOuter;
+        })
 
+        -- Inner content frame with slightly smaller radius
         local PickerFrameInner = Library:Create("Frame", {
             BackgroundColor3 = Library.BackgroundColor;
             BorderColor3 = Library.OutlineColor;
@@ -2098,6 +2101,11 @@ do
             ZIndex = 16;
             Parent = PickerFrameOuter;
         })
+        Library:Create("UICorner", {
+            CornerRadius = UDim.new(0, 7);
+            Parent = PickerFrameInner;
+        })
+        -- ========================================================
 
         local Highlight = Library:Create("Frame", {
             BackgroundColor3 = Library.AccentColor;
@@ -2142,7 +2150,6 @@ do
             Parent = SatVibMap;
         })
 
-        -- local CursorInner = 
         Library:Create("ImageLabel", {
             Size = UDim2.new(0, CursorOuter.Size.X.Offset - 2, 0, CursorOuter.Size.Y.Offset - 2);
             Position = UDim2.new(0, 1, 0, 1);
@@ -2273,18 +2280,18 @@ do
             })
         end
 
-        -- local DisplayLabel = 
         Library:CreateLabel({
             Size = UDim2.new(1, 0, 0, 14);
             Position = UDim2.fromOffset(5, 5);
             TextXAlignment = Enum.TextXAlignment.Left;
             TextSize = 14;
-            Text = ColorPicker.Title,--Info.Default;
+            Text = ColorPicker.Title,
             TextWrapped = false;
             ZIndex = 16;
             Parent = PickerFrameInner;
         })
 
+        -- Context Menu (unchanged)
         local ContextMenu = {}
         do
             ContextMenu.Options = {}
@@ -2400,7 +2407,7 @@ do
                 Library:Notify("Copied color!", 2)
             end)
 
-            ColorPicker.SetValueRGB = function(...) end --// make luau lsp shut up
+            ColorPicker.SetValueRGB = function(...) end
             ContextMenu:AddOption("Paste color", function()
                 if not Library.ColorClipboard then
                     Library:Notify("You have not copied a color!", 2)
@@ -2422,22 +2429,20 @@ do
         end
         ColorPicker.ContextMenu = ContextMenu
 
+        -- Registry entries
         Library:AddToRegistry(PickerFrameInner, { BackgroundColor3 = "BackgroundColor"; BorderColor3 = "OutlineColor"; })
         Library:AddToRegistry(Highlight, { BackgroundColor3 = "AccentColor"; })
         Library:AddToRegistry(SatVibMapInner, { BackgroundColor3 = "BackgroundColor"; BorderColor3 = "OutlineColor"; })
-
         Library:AddToRegistry(HueBoxInner, { BackgroundColor3 = "MainColor"; BorderColor3 = "OutlineColor"; })
         Library:AddToRegistry(RgbBoxBase.Frame, { BackgroundColor3 = "MainColor"; BorderColor3 = "OutlineColor"; })
         Library:AddToRegistry(RgbBox, { TextColor3 = "FontColor", })
         Library:AddToRegistry(HueBox, { TextColor3 = "FontColor", })
 
         local SequenceTable = {}
-
         for Hue = 0, 1, 0.1 do
             table.insert(SequenceTable, ColorSequenceKeypoint.new(Hue, Color3.fromHSV(Hue, 1, 1)))
         end
 
-        -- local HueSelectorGradient =
         Library:Create("UIGradient", {
             Color = ColorSequence.new(SequenceTable);
             Rotation = 90;
@@ -2498,11 +2503,9 @@ do
             end
 
             local Color = Color3.fromHSV(HSV[1], HSV[2], HSV[3])
-
             ColorPicker.Transparency = Transparency or 0
             ColorPicker:SetHSVFromRGB(Color)
             ColorPicker:Display()
-
             RunCallback()
         end
 
@@ -2510,7 +2513,6 @@ do
             ColorPicker.Transparency = Transparency or 0
             ColorPicker:SetHSVFromRGB(Color)
             ColorPicker:Display()
-
             RunCallback()
         end
 
@@ -2521,7 +2523,6 @@ do
                     ColorPicker.Hue, ColorPicker.Sat, ColorPicker.Vib = Color3.toHSV(result)
                 end
             end
-
             ColorPicker:Display()
         end)
 
@@ -2532,7 +2533,6 @@ do
                     ColorPicker.Hue, ColorPicker.Sat, ColorPicker.Vib = Color3.toHSV(Color3.fromRGB(r, g, b))
                 end
             end
-
             ColorPicker:Display()
         end)
 
@@ -2550,12 +2550,9 @@ do
                     ColorPicker.Sat = (MouseX - MinX) / (MaxX - MinX)
                     ColorPicker.Vib = 1 - ((MouseY - MinY) / (MaxY - MinY))
                     ColorPicker:Display()
-
                     RunCallback()
-
                     RunService.RenderStepped:Wait()
                 end
-
                 Library:AttemptSave()
             end
         end)
@@ -2569,12 +2566,9 @@ do
 
                     ColorPicker.Hue = ((MouseY - MinY) / (MaxY - MinY))
                     ColorPicker:Display()
-
                     RunCallback()
-
                     RunService.RenderStepped:Wait()
                 end
-
                 Library:AttemptSave()
             end
         end)
@@ -2607,12 +2601,9 @@ do
 
                         ColorPicker.Transparency = 1 - ((MouseX - MinX) / (MaxX - MinX))
                         ColorPicker:Display()
-
                         RunCallback()
-
                         RunService.RenderStepped:Wait()
                     end
-
                     Library:AttemptSave()
                 end
             end)
@@ -2646,13 +2637,12 @@ do
 
         ColorPicker:Display()
         ColorPicker.DisplayFrame = DisplayFrame
-
         ColorPicker.Default = ColorPicker.Value
-
         Options[Idx] = ColorPicker
 
         return self
     end
+    -- =================== END ROUNDED COLOR PICKER ===================
 
     function BaseAddonsFuncs:AddDropdown(Idx, Info)
         Info.ReturnInstanceInstead = if typeof(Info.ReturnInstanceInstead) == "boolean" then Info.ReturnInstanceInstead else false
@@ -6836,7 +6826,7 @@ function Library:CreateWindow(...)
 
     -- Rounded window shell
     Library:Create("UICorner", {
-        CornerRadius = UDim.new(0, 8);
+        CornerRadius = UDim.new(0, 12);
         Parent = Outer;
     })
 
@@ -6859,7 +6849,7 @@ function Library:CreateWindow(...)
     })
 
     Library:Create("UICorner", {
-        CornerRadius = UDim.new(0, 7);
+        CornerRadius = UDim.new(0, 11);
         Parent = Inner;
     })
 
@@ -6895,7 +6885,7 @@ function Library:CreateWindow(...)
     })
 
     Library:Create("UICorner", {
-        CornerRadius = UDim.new(0, 6);
+        CornerRadius = UDim.new(0, 9);
         Parent = MainSectionOuter;
     })
 
@@ -6914,7 +6904,7 @@ function Library:CreateWindow(...)
     })
 
     Library:Create("UICorner", {
-        CornerRadius = UDim.new(0, 5);
+        CornerRadius = UDim.new(0, 8);
         Parent = MainSectionInner;
     })
 
@@ -6999,7 +6989,7 @@ function Library:CreateWindow(...)
     })
 
     Library:Create("UICorner", {
-        CornerRadius = UDim.new(0, 6);
+        CornerRadius = UDim.new(0, 9);
         Parent = TabContainer;
     })
 
