@@ -1,6 +1,6 @@
-# LinoriaLib Fork — Library (5).lua Instructions
+# LinoriaLib Fork — Library.lua Instructions
 
-This document explains how to use **`Library (5).lua`**, the custom LinoriaLib fork.
+This document explains how to use **`Library.lua`**, the custom LinoriaLib fork.
 
 The library exposes a Linoria-style API for creating windows, tabs, groupboxes, controls, keybinds, color pickers, notifications, the built-in ESP Preview, and utility features.
 
@@ -8,12 +8,12 @@ The library exposes a Linoria-style API for creating windows, tabs, groupboxes, 
 
 ## 1. Loading the Library
 
-`Library (5).lua` returns the `Library` table.
+`Library.lua` returns the `Library` table.
 
 Typical usage:
 
 ```lua
-local Library = loadstring(game:HttpGet("YOUR_LIBRARY_URL_HERE"))()
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/yenkgg/LinoriaLib/refs/heads/main/Library.lua"))()
 ```
 
 If you already have the library source available locally in your script environment, load it using whatever loader your environment uses.
@@ -225,7 +225,7 @@ Groupbox:AddButton({
 })
 ```
 
-Do not depend on a variant unless your current `Library (5).lua` build exposes it; the normal button API is always the safest choice.
+Do not depend on a variant unless your current `Library.lua` build exposes it; the normal button API is always the safest choice.
 
 ---
 
@@ -1800,7 +1800,7 @@ ColorPicker:Hide()
 
 # 41. Important Notes About This Fork
 
-`Library (5).lua` is a customized fork rather than an untouched upstream LinoriaLib build.
+yenkgg's linoria is a customized fork rather than an untouched upstream LinoriaLib build.
 
 The fork contains additional/custom behavior including:
 
@@ -1843,7 +1843,7 @@ That keeps new components visually native to the fork instead of making them loo
 If you only need the basics:
 
 ```lua
-local Library = loadstring(game:HttpGet("YOUR_LIBRARY_URL_HERE"))()
+local Library = loadstring(game:HttpGet("(https://raw.githubusercontent.com/yenkgg/LinoriaLib/refs/heads/main/Library.lua)"))()
 
 local Window = Library:CreateWindow({
     Title = "My UI",
@@ -1901,6 +1901,8 @@ Library:SetESPPreviewOption("Health", true)
 Library:SetESPPreviewOption("Distance", true)
 Library:SetESPPreviewOption("Tracer", true)
 ```
+
+Have fun scripting!
 
 ---
 
