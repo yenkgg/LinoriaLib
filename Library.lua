@@ -6773,6 +6773,387 @@ do
 end
 
 --// Window \\--
+--// ESP PREVIEW
+-- Built into the library so scripts can simply create an "ESP" tab and the
+-- preview automatically appears beside the main window while that tab is open.
+function Library:CreateESPPreview()
+    if Library.ESPPreview and Library.ESPPreview.Frame then
+        return Library.ESPPreview
+    end
+
+    local Preview = {
+        Frame = nil;
+        Visible = false;
+        TabName = "esp";
+        Options = {
+            Box = true;
+            Name = true;
+            Health = true;
+            Tracer = true;
+            Distance = true;
+        };
+    }
+
+    local Gui = ScreenGui
+
+    -- Keep the preview deliberately in the same visual hierarchy as the
+    -- library itself: BackgroundColor for the shell, MainColor for the
+    -- content surface, OutlineColor for the subtle border, and AccentColor
+    -- for active/ESP elements. No second theme is introduced here.
+    local Frame = Library:Create("Frame", {
+        Name = "ESPPreview";
+        BackgroundColor3 = Library.Black;
+        BorderSizePixel = 0;
+        Size = UDim2.fromOffset(if Library.IsMobile then 230 else 250, if Library.IsMobile then 300 else 315);
+        Visible = false;
+        ZIndex = 5000;
+        Parent = Gui;
+    })
+
+    -- Match the main Linoria window shell: a dark outer frame with a
+    -- restrained radius and the library's own accent/outline treatment.
+    Library:Create("UICorner", {
+        CornerRadius = UDim.new(0, 12);
+        Parent = Frame;
+    })
+
+    local Inner = Library:Create("Frame", {
+        BackgroundColor3 = Library.MainColor;
+        BorderColor3 = Library.AccentColor;
+        BorderMode = Enum.BorderMode.Inset;
+        Position = UDim2.fromOffset(1, 1);
+        Size = UDim2.new(1, -2, 1, -2);
+        ZIndex = 5000;
+        Parent = Frame;
+    })
+    Library:AddToRegistry(Inner, {
+        BackgroundColor3 = "MainColor";
+        BorderColor3 = "AccentColor";
+    })
+
+    Library:Create("UICorner", {
+        CornerRadius = UDim.new(0, 11);
+        Parent = Inner;
+    })
+
+    Library:Create("UIStroke", {
+        Color = Library.AccentColor;
+        Transparency = 0.55;
+        Thickness = 1;
+        ApplyStrokeMode = Enum.ApplyStrokeMode.Border;
+        Parent = Inner;
+    })
+
+    local Header = Library:Create("Frame", {
+        BackgroundTransparency = 1;
+        Position = UDim2.fromOffset(7, 3);
+        Size = UDim2.new(1, -14, 0, 39);
+        ZIndex = 5001;
+        Parent = Inner;
+    })
+
+    local Title = Library:CreateLabel({
+        BackgroundTransparency = 1;
+        Position = UDim2.fromOffset(0, 0);
+        Size = UDim2.new(1, 0, 0, 20);
+        Text = "ESP PREVIEW";
+        TextSize = 13;
+        TextColor3 = Library.FontColor;
+        TextXAlignment = Enum.TextXAlignment.Left;
+        ZIndex = 5002;
+        Parent = Header;
+    })
+    Library:AddToRegistry(Title, {
+        TextColor3 = "FontColor";
+    }, true)
+
+    local Subtitle = Library:CreateLabel({
+        BackgroundTransparency = 1;
+        Position = UDim2.fromOffset(0, 18);
+        Size = UDim2.new(1, 0, 0, 15);
+        Text = "PLAYER VISUALIZATION";
+        TextSize = 9;
+        TextColor3 = Library.DisabledTextColor;
+        TextXAlignment = Enum.TextXAlignment.Left;
+        ZIndex = 5002;
+        Parent = Header;
+    })
+    Library:AddToRegistry(Subtitle, {
+        TextColor3 = "DisabledTextColor";
+    }, true)
+
+    -- The reference Linoria window does not use a heavy header divider.
+    -- Keep the header clean and let the surrounding shell define the section.
+
+    -- The preview canvas remains a transparent drawing surface. The actual
+    -- player/ESP elements below are intentionally preserved rather than
+    -- replaced with an image or a separate ESP implementation.
+    local Canvas = Library:Create("Frame", {
+        BackgroundTransparency = 1;
+        Position = UDim2.fromOffset(8, 47);
+        Size = UDim2.new(1, -16, 1, -55);
+        ZIndex = 5001;
+        Parent = Inner;
+    })
+
+    local Ground = Library:Create("Frame", {
+        BackgroundColor3 = Library.OutlineColor;
+        BackgroundTransparency = 0.15;
+        BorderSizePixel = 0;
+        AnchorPoint = Vector2.new(0.5, 1);
+        Position = UDim2.new(0.5, 0, 1, -12);
+        Size = UDim2.new(1, -28, 0, 1);
+        ZIndex = 5001;
+        Parent = Canvas;
+    })
+    Library:AddToRegistry(Ground, {
+        BackgroundColor3 = "OutlineColor";
+    }, true)
+
+    local Player = Library:Create("Frame", {
+        BackgroundTransparency = 1;
+        AnchorPoint = Vector2.new(0.5, 0.5);
+        Position = UDim2.new(0.5, 0, 0.5, 8);
+        Size = UDim2.fromOffset(92, 190);
+        ZIndex = 5002;
+        Parent = Canvas;
+    })
+
+    local Head = Library:Create("Frame", {
+        BackgroundColor3 = Library.FontColor;
+        BorderSizePixel = 0;
+        AnchorPoint = Vector2.new(0.5, 0);
+        Position = UDim2.new(0.5, 0, 0, 10);
+        Size = UDim2.fromOffset(24, 24);
+        ZIndex = 5004;
+        Parent = Player;
+    })
+    Library:AddToRegistry(Head, { BackgroundColor3 = "FontColor" }, true)
+    Library:Create("UICorner", { CornerRadius = UDim.new(1, 0); Parent = Head })
+
+    local Body = Library:Create("Frame", {
+        BackgroundColor3 = Library.FontColor;
+        BorderSizePixel = 0;
+        AnchorPoint = Vector2.new(0.5, 0);
+        Position = UDim2.new(0.5, 0, 0, 39);
+        Size = UDim2.fromOffset(38, 70);
+        ZIndex = 5003;
+        Parent = Player;
+    })
+    Library:AddToRegistry(Body, { BackgroundColor3 = "FontColor" }, true)
+    ApplySoftStyle(Body, 8, "OutlineColor")
+
+    local LeftArm = Library:Create("Frame", {
+        BackgroundColor3 = Library.FontColor;
+        BorderSizePixel = 0;
+        Position = UDim2.fromOffset(16, 42);
+        Size = UDim2.fromOffset(12, 58);
+        Rotation = 6;
+        ZIndex = 5002;
+        Parent = Player;
+    })
+    Library:AddToRegistry(LeftArm, { BackgroundColor3 = "FontColor" }, true)
+    ApplySoftStyle(LeftArm, 6)
+
+    local RightArm = LeftArm:Clone()
+    RightArm.Position = UDim2.fromOffset(64, 42)
+    RightArm.Rotation = -6
+    RightArm.Parent = Player
+    Library:AddToRegistry(RightArm, { BackgroundColor3 = "FontColor" }, true)
+
+    local LeftLeg = Library:Create("Frame", {
+        BackgroundColor3 = Library.FontColor;
+        BorderSizePixel = 0;
+        Position = UDim2.fromOffset(25, 106);
+        Size = UDim2.fromOffset(15, 66);
+        Rotation = 2;
+        ZIndex = 5002;
+        Parent = Player;
+    })
+    Library:AddToRegistry(LeftLeg, { BackgroundColor3 = "FontColor" }, true)
+    ApplySoftStyle(LeftLeg, 6)
+
+    local RightLeg = LeftLeg:Clone()
+    RightLeg.Position = UDim2.fromOffset(52, 106)
+    RightLeg.Rotation = -2
+    RightLeg.Parent = Player
+    Library:AddToRegistry(RightLeg, { BackgroundColor3 = "FontColor" }, true)
+
+    local Box = Library:Create("Frame", {
+        BackgroundTransparency = 1;
+        BorderColor3 = Library.AccentColor;
+        BorderSizePixel = 1;
+        Position = UDim2.fromOffset(18, 5);
+        Size = UDim2.fromOffset(56, 178);
+        ZIndex = 5005;
+        Parent = Player;
+    })
+    Library:AddToRegistry(Box, { BorderColor3 = "AccentColor" }, true)
+    -- Apply only the rounded stroke to the ESP box; keep its fill transparent
+    -- so the player visualization remains unchanged.
+    ApplySoftStyle(Box, 7, "AccentColor")
+    Box.BackgroundTransparency = 1
+
+    local NameLabel = Library:CreateLabel({
+        Position = UDim2.fromOffset(-12, -20);
+        Size = UDim2.fromOffset(80, 18);
+        Text = "Player";
+        TextSize = 11;
+        TextColor3 = Library.AccentColor;
+        TextXAlignment = Enum.TextXAlignment.Center;
+        ZIndex = 5006;
+        Parent = Box;
+    })
+    Library:AddToRegistry(NameLabel, { TextColor3 = "AccentColor" }, true)
+
+    local HealthBack = Library:Create("Frame", {
+        BackgroundColor3 = Library.MainColor;
+        BorderSizePixel = 0;
+        Position = UDim2.fromOffset(-8, 0);
+        Size = UDim2.fromOffset(4, 178);
+        ZIndex = 5006;
+        Parent = Box;
+    })
+    Library:AddToRegistry(HealthBack, { BackgroundColor3 = "MainColor" }, true)
+    ApplySoftStyle(HealthBack, 4, "OutlineColor")
+
+    local Health = Library:Create("Frame", {
+        BackgroundColor3 = Color3.fromRGB(95, 210, 125);
+        BorderSizePixel = 0;
+        AnchorPoint = Vector2.new(0, 1);
+        Position = UDim2.new(0, 0, 1, 0);
+        Size = UDim2.new(1, 0, 0.78, 0);
+        ZIndex = 5007;
+        Parent = HealthBack;
+    })
+    ApplySoftStyle(Health, 4, "OutlineColor")
+
+    -- Small rounded status control, matching the library's button/control
+    -- construction without changing the existing distance value or API.
+    local DistanceBack = Library:Create("Frame", {
+        BackgroundColor3 = Library.Black;
+        BorderSizePixel = 0;
+        AnchorPoint = Vector2.new(0.5, 0);
+        Position = UDim2.new(0.5, 0, 1, 2);
+        Size = UDim2.fromOffset(76, 18);
+        ZIndex = 5005;
+        Parent = Player;
+    })
+    ApplySoftStyle(DistanceBack, Library.SmallCornerRadius, "OutlineColor")
+    Library:AddToRegistry(DistanceBack, {
+        BackgroundColor3 = "Black";
+    })
+
+    local Distance = Library:CreateLabel({
+        Position = UDim2.fromOffset(0, 0);
+        Size = UDim2.new(1, 0, 1, 0);
+        Text = "24 studs";
+        TextSize = 9;
+        TextColor3 = Library.FontColor;
+        TextTransparency = 0.25;
+        TextXAlignment = Enum.TextXAlignment.Center;
+        ZIndex = 5006;
+        Parent = DistanceBack;
+    })
+    Library:AddToRegistry(Distance, { TextColor3 = "FontColor" }, true)
+
+    local Tracer = Library:Create("Frame", {
+        BackgroundColor3 = Library.AccentColor;
+        BorderSizePixel = 0;
+        AnchorPoint = Vector2.new(0.5, 1);
+        Position = UDim2.new(0.5, 0, 1, -12);
+        Size = UDim2.fromOffset(1, 65);
+        ZIndex = 5001;
+        Parent = Canvas;
+    })
+    Library:AddToRegistry(Tracer, { BackgroundColor3 = "AccentColor" }, true)
+
+    Preview.Frame = Frame
+    Preview.Inner = Inner
+    Preview.Header = Header
+    Preview.Box = Box
+    Preview.NameLabel = NameLabel
+    Preview.HealthBack = HealthBack
+    Preview.Health = Health
+    Preview.Distance = Distance
+    Preview.DistanceBack = DistanceBack
+    Preview.Tracer = Tracer
+    Preview.Canvas = Canvas
+    Preview.Player = Player
+    Preview.Ground = Ground
+    Preview.Title = Title
+    Preview.Subtitle = Subtitle
+
+    function Preview:SetOption(Name, Value)
+        if self.Options[Name] == nil then return end
+        self.Options[Name] = Value == true
+        if Name == "Box" then self.Box.Visible = self.Options.Box end
+        if Name == "Name" then self.NameLabel.Visible = self.Options.Name end
+        if Name == "Health" then self.HealthBack.Visible = self.Options.Health end
+        if Name == "Distance" then self.Distance.Visible = self.Options.Distance end
+        if Name == "Tracer" then self.Tracer.Visible = self.Options.Tracer end
+    end
+
+    function Preview:UpdatePosition()
+        if not self.Frame or not LibraryMainOuterFrame then return end
+        local Camera = workspace.CurrentCamera
+        if not Camera then return end
+
+        local Viewport = Camera.ViewportSize
+        local MainPos = LibraryMainOuterFrame.AbsolutePosition
+        local MainSize = LibraryMainOuterFrame.AbsoluteSize
+        local PreviewSize = self.Frame.AbsoluteSize
+        local Gap = 4
+
+        local X = MainPos.X + MainSize.X + Gap
+        local Y = MainPos.Y
+
+        -- Keep the preview beside the window whenever there is room.
+        -- If there is not enough room, put it on the other side; on narrow
+        -- mobile screens it falls underneath instead of going off-screen.
+        if X + PreviewSize.X > Viewport.X - 4 then
+            local LeftX = MainPos.X - PreviewSize.X - Gap
+            if LeftX >= 4 then
+                X = LeftX
+            else
+                X = math.clamp(MainPos.X, 4, math.max(4, Viewport.X - PreviewSize.X - 4))
+                Y = MainPos.Y + MainSize.Y + Gap
+            end
+        end
+
+        Y = math.clamp(Y, 4, math.max(4, Viewport.Y - PreviewSize.Y - 4))
+        self.Frame.Position = UDim2.fromOffset(math.floor(X), math.floor(Y))
+    end
+
+    function Preview:SetVisible(Value)
+        self.Visible = Value == true
+        self.Frame.Visible = self.Visible and Library.Toggled
+        if self.Frame.Visible then
+            task.defer(function()
+                self:UpdatePosition()
+            end)
+        end
+    end
+
+    Library.ESPPreview = Preview
+    return Preview
+end
+
+function Library:SetESPPreviewVisible(Value)
+    local Preview = Library.ESPPreview
+    if not Preview then
+        return
+    end
+    Preview:SetVisible(Value)
+end
+
+function Library:SetESPPreviewOption(Name, Value)
+    local Preview = Library.ESPPreview
+    if Preview then
+        Preview:SetOption(Name, Value)
+    end
+end
+
 function Library:CreateWindow(...)
     local Arguments = { ... }
     local WindowInfo = Templates.Window
@@ -6823,6 +7204,14 @@ function Library:CreateWindow(...)
         Name = "Window";
     })
     LibraryMainOuterFrame = Outer
+
+    local ESPPreview = Library:CreateESPPreview()
+    Library:GiveSignal(Outer:GetPropertyChangedSignal("AbsolutePosition"):Connect(function()
+        ESPPreview:UpdatePosition()
+    end))
+    Library:GiveSignal(Outer:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
+        ESPPreview:UpdatePosition()
+    end))
 
     -- Rounded window shell
     Library:Create("UICorner", {
@@ -7845,6 +8234,10 @@ end
 
             Library.ActiveTab = Name
 
+            if Library.ESPPreview then
+                Library.ESPPreview:SetVisible(string.lower(tostring(Name)) == Library.ESPPreview.TabName)
+            end
+
             for _, OtherTab in next, Window.Tabs do
                 if OtherTab ~= Tab then
                     OtherTab:HideTab()
@@ -8307,6 +8700,12 @@ end
         Toggled = (not Toggled)
 
         Library.Toggled = Toggled
+        if Library.ESPPreview then
+            Library.ESPPreview.Frame.Visible = Toggled and Library.ActiveTab == Library.ESPPreview.TabName
+            if Toggled then
+                task.defer(function() Library.ESPPreview:UpdatePosition() end)
+            end
+        end
         if WindowInfo.UnlockMouseWhileOpen then
             ModalElement.Modal = Library.Toggled
         end
