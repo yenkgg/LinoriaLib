@@ -6802,37 +6802,52 @@ function Library:CreateESPPreview()
     -- for active/ESP elements. No second theme is introduced here.
     local Frame = Library:Create("Frame", {
         Name = "ESPPreview";
-        BackgroundColor3 = Library.BackgroundColor;
+        BackgroundColor3 = Library.Black;
         BorderSizePixel = 0;
         Size = UDim2.fromOffset(if Library.IsMobile then 230 else 250, if Library.IsMobile then 300 else 315);
         Visible = false;
         ZIndex = 5000;
         Parent = Gui;
     })
-    ApplySoftStyle(Frame, Library.CornerRadius, "OutlineColor")
-    Library:AddToRegistry(Frame, {
-        BackgroundColor3 = "BackgroundColor";
+
+    -- Match the main Linoria window shell: a dark outer frame with a
+    -- restrained radius and the library's own accent/outline treatment.
+    Library:Create("UICorner", {
+        CornerRadius = UDim.new(0, 12);
+        Parent = Frame;
     })
 
-    -- Inner surface mirrors the rounded window/groupbox construction used
-    -- throughout the library.
     local Inner = Library:Create("Frame", {
         BackgroundColor3 = Library.MainColor;
-        BorderSizePixel = 0;
+        BorderColor3 = Library.AccentColor;
+        BorderMode = Enum.BorderMode.Inset;
         Position = UDim2.fromOffset(1, 1);
         Size = UDim2.new(1, -2, 1, -2);
         ZIndex = 5000;
         Parent = Frame;
     })
-    ApplySoftStyle(Inner, Library.SmallCornerRadius, "OutlineColor")
     Library:AddToRegistry(Inner, {
         BackgroundColor3 = "MainColor";
+        BorderColor3 = "AccentColor";
+    })
+
+    Library:Create("UICorner", {
+        CornerRadius = UDim.new(0, 11);
+        Parent = Inner;
+    })
+
+    Library:Create("UIStroke", {
+        Color = Library.AccentColor;
+        Transparency = 0.55;
+        Thickness = 1;
+        ApplyStrokeMode = Enum.ApplyStrokeMode.Border;
+        Parent = Inner;
     })
 
     local Header = Library:Create("Frame", {
         BackgroundTransparency = 1;
-        Position = UDim2.fromOffset(12, 7);
-        Size = UDim2.new(1, -24, 0, 39);
+        Position = UDim2.fromOffset(7, 3);
+        Size = UDim2.new(1, -14, 0, 39);
         ZIndex = 5001;
         Parent = Inner;
     })
@@ -6840,9 +6855,9 @@ function Library:CreateESPPreview()
     local Title = Library:CreateLabel({
         BackgroundTransparency = 1;
         Position = UDim2.fromOffset(0, 0);
-        Size = UDim2.new(1, 0, 0, 19);
+        Size = UDim2.new(1, 0, 0, 20);
         Text = "ESP PREVIEW";
-        TextSize = 14;
+        TextSize = 13;
         TextColor3 = Library.FontColor;
         TextXAlignment = Enum.TextXAlignment.Left;
         ZIndex = 5002;
@@ -6857,7 +6872,7 @@ function Library:CreateESPPreview()
         Position = UDim2.fromOffset(0, 18);
         Size = UDim2.new(1, 0, 0, 15);
         Text = "PLAYER VISUALIZATION";
-        TextSize = 10;
+        TextSize = 9;
         TextColor3 = Library.DisabledTextColor;
         TextXAlignment = Enum.TextXAlignment.Left;
         ZIndex = 5002;
@@ -6867,33 +6882,23 @@ function Library:CreateESPPreview()
         TextColor3 = "DisabledTextColor";
     }, true)
 
-    local HeaderLine = Library:Create("Frame", {
-        BackgroundColor3 = Library.OutlineColor;
-        BackgroundTransparency = 0.35;
-        BorderSizePixel = 0;
-        Position = UDim2.new(0, 0, 1, 0);
-        Size = UDim2.new(1, 0, 0, 1);
-        ZIndex = 5001;
-        Parent = Header;
-    })
-    Library:AddToRegistry(HeaderLine, {
-        BackgroundColor3 = "OutlineColor";
-    }, true)
+    -- The reference Linoria window does not use a heavy header divider.
+    -- Keep the header clean and let the surrounding shell define the section.
 
     -- The preview canvas remains a transparent drawing surface. The actual
     -- player/ESP elements below are intentionally preserved rather than
     -- replaced with an image or a separate ESP implementation.
     local Canvas = Library:Create("Frame", {
         BackgroundTransparency = 1;
-        Position = UDim2.fromOffset(8, 52);
-        Size = UDim2.new(1, -16, 1, -60);
+        Position = UDim2.fromOffset(8, 47);
+        Size = UDim2.new(1, -16, 1, -55);
         ZIndex = 5001;
         Parent = Inner;
     })
 
     local Ground = Library:Create("Frame", {
         BackgroundColor3 = Library.OutlineColor;
-        BackgroundTransparency = 0.25;
+        BackgroundTransparency = 0.15;
         BorderSizePixel = 0;
         AnchorPoint = Vector2.new(0.5, 1);
         Position = UDim2.new(0.5, 0, 1, -12);
@@ -7023,16 +7028,32 @@ function Library:CreateESPPreview()
     })
     ApplySoftStyle(Health, 4, "OutlineColor")
 
+    -- Small rounded status control, matching the library's button/control
+    -- construction without changing the existing distance value or API.
+    local DistanceBack = Library:Create("Frame", {
+        BackgroundColor3 = Library.Black;
+        BorderSizePixel = 0;
+        AnchorPoint = Vector2.new(0.5, 0);
+        Position = UDim2.new(0.5, 0, 1, 2);
+        Size = UDim2.fromOffset(76, 18);
+        ZIndex = 5005;
+        Parent = Player;
+    })
+    ApplySoftStyle(DistanceBack, Library.SmallCornerRadius, "OutlineColor")
+    Library:AddToRegistry(DistanceBack, {
+        BackgroundColor3 = "Black";
+    })
+
     local Distance = Library:CreateLabel({
-        Position = UDim2.new(0.5, -45, 1, -2);
-        Size = UDim2.fromOffset(90, 16);
+        Position = UDim2.fromOffset(0, 0);
+        Size = UDim2.new(1, 0, 1, 0);
         Text = "24 studs";
-        TextSize = 10;
+        TextSize = 9;
         TextColor3 = Library.FontColor;
-        TextTransparency = 0.4;
+        TextTransparency = 0.25;
         TextXAlignment = Enum.TextXAlignment.Center;
         ZIndex = 5006;
-        Parent = Player;
+        Parent = DistanceBack;
     })
     Library:AddToRegistry(Distance, { TextColor3 = "FontColor" }, true)
 
@@ -7055,6 +7076,7 @@ function Library:CreateESPPreview()
     Preview.HealthBack = HealthBack
     Preview.Health = Health
     Preview.Distance = Distance
+    Preview.DistanceBack = DistanceBack
     Preview.Tracer = Tracer
     Preview.Canvas = Canvas
     Preview.Player = Player
@@ -7081,7 +7103,7 @@ function Library:CreateESPPreview()
         local MainPos = LibraryMainOuterFrame.AbsolutePosition
         local MainSize = LibraryMainOuterFrame.AbsoluteSize
         local PreviewSize = self.Frame.AbsoluteSize
-        local Gap = 6
+        local Gap = 4
 
         local X = MainPos.X + MainSize.X + Gap
         local Y = MainPos.Y
