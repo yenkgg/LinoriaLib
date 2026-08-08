@@ -1,4 +1,5 @@
 # LinoriaLib — yenkgg Fork
+<img width="821" height="820" alt="yenkgg&#39;s linoria fork(1)" src="https://github.com/user-attachments/assets/415e64ae-ca4e-49dd-8c18-26f19d64eba3" />
 
 A customized and visually enhanced fork of LinoriaLib for Roblox scripting.
 
